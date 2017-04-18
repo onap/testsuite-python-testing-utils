@@ -44,6 +44,11 @@ class EteGatherDataListener(object):
         "vid" : "10.0.8.1",
         "portal" : "10.0.9.1",
         "message_router" : "10.0.11.1",
+        "dcae_pstg00" : "10.0.4.101",
+        "dcae_coll00" : "10.0.4.102",
+        "dcae_cdap00" : "10.0.4.103",
+        "dcae_cdap01" : "10.0.4.104",
+        "dcae_cdap02" : "10.0.4.105"
         }
 
     keyfile = ""
