@@ -23,7 +23,7 @@ class TestController(object):
         '''
         Constructor
         '''
-        self.config = TestConfig(duration=options.duration)
+        self.config = TestConfig(duration=options.duration, cyclelength=options.cyclelength, json=options.profile)
         logging.info(self.config.to_string())
 
     def execute(self):

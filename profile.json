@@ -1,0 +1,9 @@
+{
+	"cyclelength" : 30,
+	"duration" : 30,
+	"profile" : [
+		[0, ["health"]],
+		[10, ["health"]],
+		[10, ["health"]]
+	]
+}

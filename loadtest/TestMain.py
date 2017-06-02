@@ -54,7 +54,9 @@ def main(argv=None):
         parser = OptionParser(version=program_version_string, epilog=program_longdesc, description=program_license)
         parser.add_option("-d", "--duration", dest="duration", help="duration of soak test in seconds [default: %default]", type=int)
         parser.add_option("-l", "--logfile", dest="logfile", help="Full path soak log file name")
-        parser.set_defaults(duration="60", logfile="")
+        parser.add_option("-c", "--cyclelength", dest="cyclelength", help="Length of a single cycle through the config.\nMust be longer than a single iteration", type=int)
+        parser.add_option("-p", "--profile", dest="profile", help="Filename of json profile file")
+        parser.set_defaults(logfile="")
         (opts, args) = parser.parse_args(argv)
 
         if (opts.logfile != ""):
