@@ -1,5 +1,6 @@
 import urllib
 from requests.packages import urllib3
+from urlparse import urlparse
 
 class HTTPUtils:
     """HTTPUtils is common resource for simple http helper keywords."""
@@ -11,3 +12,7 @@ class HTTPUtils:
     def disable_warnings(self):
         """  Disable the cert warnings when creating sessions for A&AI API Calls """
         urllib3.disable_warnings()
+
+    def url_parse(self, url):
+    	"""  Get pieces of the URL """
+        return urlparse(url)
