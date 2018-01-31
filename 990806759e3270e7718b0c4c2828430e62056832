@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Mor Dabastany <mor.dabastany@amdocs.com>
+Code-Review+2: Daniel Rose <dr695h@att.com>
+Submitted-by: Daniel Rose <dr695h@att.com>
+Submitted-at: Wed, 31 Jan 2018 14:22:58 +0000
+Reviewed-on: https://gerrit.onap.org/r/29785
+Project: testsuite/python-testing-utils
+Branch: refs/heads/amsterdam
