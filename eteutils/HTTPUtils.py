@@ -1,6 +1,6 @@
 import urllib
-from requests.packages import urllib3
-from urlparse import urlparse
+import urllib3
+import urlparse
 
 class HTTPUtils:
     """HTTPUtils is common resource for simple http helper keywords."""
@@ -14,5 +14,5 @@ class HTTPUtils:
         urllib3.disable_warnings()
 
     def url_parse(self, url):
-    	"""  Get pieces of the URL """
-        return urlparse(url)
+        """  Get pieces of the URL """
+        return urlparse.urlparse(url)
