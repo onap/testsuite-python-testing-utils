@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_58ca826f",
+        "filename": "eteutils/OpenstackLibrary.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 37
+      },
+      "writtenOn": "2018-09-28T13:12:26Z",
+      "side": 1,
+      "message": "can you make version default to 2.0?",
+      "revId": "ffa110472dae27fb366dbfe3e480911af9b81c1b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
