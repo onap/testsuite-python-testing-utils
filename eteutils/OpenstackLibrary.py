@@ -12,7 +12,7 @@ class OpenstackLibrary:
         self._cache = robot.utils.ConnectionCache('No connections created')
         self.builtin = BuiltIn()
 
-    def save_openstack_auth(self, alias, response,token, version):
+    def save_openstack_auth(self, alias, response,token, version='v2.0'):
         """Save Openstack Auth takes in an openstack auth response and saves it to allow easy retrival of token and service catalog"""
         self.builtin.log('Creating connection: %s' % alias, 'DEBUG')
         jsonResponse = json.loads(response);
