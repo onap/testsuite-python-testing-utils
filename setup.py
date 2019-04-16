@@ -34,8 +34,8 @@ setup(
         'deepdiff>=2.5,<3.3',
         'Jinja2'
     ],  # what we need
-    packages=['eteutils', 'loadtest'],       # The name of your scripts package
-    package_dir={'eteutils': 'eteutils', 'loadtest': 'loadtest'}, # The location of your scipts package
+    packages=['eteutils', 'loadtest', 'vcpeutils'],       # The name of your scripts package
+    package_dir={'eteutils': 'eteutils', 'loadtest': 'loadtest', 'vcpeutils':'vcpeutils'}, # The location of your scipts package
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
