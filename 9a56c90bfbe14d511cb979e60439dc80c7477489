@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e85a1062_c9fdcfcc",
+        "filename": "vcpeutils/vcpecommon.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 37
+      },
+      "writtenOn": "2019-04-16T19:27:47Z",
+      "side": 1,
+      "message": "seems a little not reusable, but we can rework that out. i have some mso pending api changes anyway",
+      "revId": "9a56c90bfbe14d511cb979e60439dc80c7477489",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
