@@ -363,8 +363,9 @@ class SoUtils:
                 return None
 
         # run heatbridge
-        if heatbridge:
-            self.vcpecommon.heatbridge(vfmodule_instance_name, svc_instance_id)
-            self.vcpecommon.save_vgmux_vnf_name(vnf_instance_name)
+        # removed until we fold in heatbridge
+        #if heatbridge:
+            #self.vcpecommon.heatbridge(vfmodule_instance_name, svc_instance_id)
+            #self.vcpecommon.save_vgmux_vnf_name(vnf_instance_name)
 
         return svc_instance_id
