@@ -23,7 +23,7 @@ class OpenstackLibrary:
     def get_openstack_token(self, alias):
         """Get Openstack auth token from the current alias"""
         response = self._cache.switch(alias)
-        if isinstance(response, basestring):
+        if isinstance(response, str):
             jsonResponse = json.loads(response);
         else:
             jsonResponse = response;
@@ -35,7 +35,7 @@ class OpenstackLibrary:
     def get_openstack_catalog(self, alias):
         """Get Openstack service catalog from the current alias"""
         response = self._cache.switch(alias)
-        if isinstance(response, basestring):
+        if isinstance(response, str):
             jsonResponse = json.loads(response);
         else:
             jsonResponse = response;
@@ -48,7 +48,7 @@ class OpenstackLibrary:
     def get_current_openstack_tenant(self, alias):
         """Get Openstack tenant from the current alias"""
         response = self._cache.switch(alias)
-        if isinstance(response, basestring):
+        if isinstance(response, str):
             jsonResponse = json.loads(response);
         else:
             jsonResponse = response;
@@ -65,7 +65,7 @@ class OpenstackLibrary:
     def get_openstack_regions(self, alias):
         """Get all Openstack regions from the current alias"""
         response = self._cache.switch(alias)
-        if isinstance(response, basestring):
+        if isinstance(response, str):
             jsonResponse = json.loads(response);
         else:
             jsonResponse = response;
@@ -85,7 +85,7 @@ class OpenstackLibrary:
     def get_openstack_service_url(self, alias, servicetype, region =  None, tenant_id = None):
         """Get Openstack service catalog from the current alias"""
         response = self._cache.switch(alias)
-        if isinstance(response, basestring):
+        if isinstance(response, str):
             jsonResponse = json.loads(response);
         else:
             jsonResponse = response;
@@ -103,7 +103,7 @@ class OpenstackLibrary:
                 # Only provide tenant id when authorizing without qualifying with tenant id
                 # WindRiver does not return the tenantId on the endpoint in this case.
                 if tenant_id is not None:
-                	listOfEndpoints[:] = [y for y in listOfEndpoints if self.__determine_match(y['tenantId'], tenant_id)];
+                    listOfEndpoints[:] = [y for y in listOfEndpoints if self.__determine_match(y['tenantId'], tenant_id)];
                 if jsonResponse['keystone_api_version'] == 'v3':
                         listOfEndpoints[:] = [z for z in listOfEndpoints if self.__determine_match(z['interface'], 'public')];
                 if len(listOfEndpoints) > 0:

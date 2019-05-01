@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name='robotframework-onap',            # This is the name of your PyPI-package.
-    keywords=("utils", "robotframework", "testing", "onap"),
+    keywords=["utils", "robotframework", "testing", "onap"],
     version='0.4',                          # Update the version number for new releases
     license="Apache 2.0",
     description='Scripts written to be used during robot framework testing',    # Info about script
@@ -31,8 +31,11 @@ setup(
         'paramiko',
         'pyyaml',
         'robotframework',
-        'deepdiff>=2.5,<3.3',
-        'Jinja2'
+        'deepdiff',
+        'Jinja2',
+        'urllib3',
+        'six',
+        'requests'
     ],  # what we need
     packages=['eteutils', 'loadtest', 'vcpeutils'],       # The name of your scripts package
     package_dir={'eteutils': 'eteutils', 'loadtest': 'loadtest', 'vcpeutils':'vcpeutils'}, # The location of your scipts package
@@ -40,6 +43,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
         'Environment :: Plugins',
         'Framework :: Robot Framework',
         'Framework :: Robot Framework :: Library',

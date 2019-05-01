@@ -1,15 +1,10 @@
 #! /usr/bin/python
 
-import sys
-import logging
-import requests
-import json
-from datetime import datetime
-#import progressbar
 import time
-import csar_parser
-import preload
-from vcpecommon import *
+
+from .csar_parser import *
+from .preload import *
+from .vcpecommon import *
 from robot.api import logger
 
 
@@ -212,7 +207,7 @@ class SoUtils:
         return {'requestDetails': req_details}
 
     def create_custom_service(self, csar_file, brg_mac, name_suffix=None):
-        parser = csar_parser.CsarParser()
+        parser = CsarParser()
         if not parser.parse_csar(csar_file):
             return False
 
@@ -259,7 +254,7 @@ class SoUtils:
         self.tenant_id=tenant_id
         self.logger.info('\n----------------------------------------------------------------------------------')
         self.logger.info('Start to create entire service defined in csar: {0}'.format(csar_file))
-        parser = csar_parser.CsarParser()
+        parser = CsarParser()
         self.logger.info('Parsing csar ...')
         if not parser.parse_csar(csar_file):
             self.logger.error('Cannot parse csar: {0}'.format(csar_file))
@@ -337,7 +332,7 @@ class SoUtils:
 
         # SDNC Preload 
 
-        preloader = preload.Preload(self.vcpecommon)
+        preloader = Preload(self.vcpecommon)
         preloader.preload_vfmodule(vnf_template_file, svc_instance_id, parser.vnf_models[0], parser.vfmodule_models[0],
                                    preload_dict, name_suffix)
 

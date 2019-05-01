@@ -1,12 +1,8 @@
 #! /usr/bin/python
 
-import requests
-import json
-import sys
 from datetime import datetime
-from vcpecommon import *
-import csar_parser
-#import logging
+from .vcpecommon import *
+from .csar_parser import *
 from robot.api import logger
 import base64
 
@@ -18,7 +14,7 @@ class Preload:
         self.vcpecommon = vcpecommon
 
     def replace(self, sz, replace_dict):
-        for old_string, new_string in replace_dict.items():
+        for old_string, new_string in list(replace_dict.items()):
             sz = sz.replace(old_string, new_string)
         if self.vcpecommon.template_variable_symbol in sz:
             self.logger.error('Error! Cannot find a value to replace ' + sz)
@@ -30,12 +26,12 @@ class Preload:
             stk = [json_data]
             while len(stk) > 0:
                 data = stk.pop()
-                for k, v in data.items():
+                for k, v in list(data.items()):
                     if type(v) is dict:
                         stk.append(v)
                     elif type(v) is list:
                         stk.extend(v)
-                    elif type(v) is str or type(v) is unicode:
+                    elif type(v) is str or type(v) is str:
                         if self.vcpecommon.template_variable_symbol in v:
                             data[k] = self.replace(v, replace_dict)
                     else:
@@ -166,8 +162,8 @@ class Preload:
         return self.preload(template_file, replace_dict, self.vcpecommon.sdnc_preload_vnf_url)
 
     def preload_all_networks(self, template_file, name_suffix):
-        common_dict = {'${' + k + '}': v for k, v in self.vcpecommon.common_preload_config.items()}
-        for network, v in self.vcpecommon.preload_network_config.items():
+        common_dict = {'${' + k + '}': v for k, v in list(self.vcpecommon.common_preload_config.items())}
+        for network, v in list(self.vcpecommon.preload_network_config.items()):
             subnet_start_ip, subnet_gateway_ip = v
             if not self.preload_network(template_file, network, subnet_start_ip, subnet_gateway_ip,
                                         common_dict, name_suffix):
@@ -180,15 +176,15 @@ class Preload:
         vcpecommon = VcpeCommon()
         preloader = Preload(vcpecommon)
 
-        network_dict = {'${' + k + '}': v for k, v in self.vcpecommon.common_preload_config.items()}
+        network_dict = {'${' + k + '}': v for k, v in list(self.vcpecommon.common_preload_config.items())}
         template_file = 'preload_templates/template.network.json'
-        for k, v in self.vcpecommon.preload_network_config.items():
+        for k, v in list(self.vcpecommon.preload_network_config.items()):
             if not preloader.preload_network(template_file, k, v[0], v[1], network_dict, name_suffix):
                 break
 
         print('---------------------------------------------------------------')
         print('Network related replacement dictionary:')
-        print(json.dumps(network_dict, indent=4, sort_keys=True))
+        print((json.dumps(network_dict, indent=4, sort_keys=True)))
         print('---------------------------------------------------------------')
 
         keys = ['infra', 'bng', 'gmux', 'brg']
@@ -196,7 +192,7 @@ class Preload:
             csar_file = self.vcpecommon.find_file(key, 'csar', 'csar')
             template_file = self.vcpecommon.find_file(key, 'json', 'preload_templates')
             if csar_file and template_file:
-                parser = csar_parser.CsarParser()
+                parser = CsarParser()
                 parser.parse_csar(csar_file)
                 service_instance_id = 'test112233'
                 preloader.preload_vfmodule(template_file, service_instance_id, parser.vnf_models[0],
@@ -207,7 +203,7 @@ class Preload:
         template_sniro_request = self.vcpecommon.find_file('sniro_request', 'json', 'preload_templates')
 
         vcperescust_csar = self.vcpecommon.find_file('rescust', 'csar', 'csar')
-        parser = csar_parser.CsarParser()
+        parser = CsarParser()
         parser.parse_csar(vcperescust_csar)
         tunnelxconn_ar_name = None
         brg_ar_name = None

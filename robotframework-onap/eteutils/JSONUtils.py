@@ -7,11 +7,11 @@ class JSONUtils:
     
     def json_equals(self, left, right):
         """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them, returning if they are equal or not."""
-        if isinstance(left, basestring):
+        if isinstance(left, str):
             left_json = json.loads(left);
         else:
             left_json = left;
-        if isinstance(right, basestring):
+        if isinstance(right, str):
             right_json = json.loads(right);
         else:
             right_json = right;

@@ -7,10 +7,6 @@ import sys
 
 import ipaddress
 import requests
-import commands
-import time
-from novaclient import client as openstackclient
-from netaddr import IPAddress, IPNetwork
 
 class VcpeCommon:
     #############################################################################################
@@ -212,7 +208,7 @@ class VcpeCommon:
         return '_'.join(fields)
 
     def set_network_name(self, network_name):
-        param = ' '.join([k + ' ' + v for k, v in self.cloud.items()])
+        param = ' '.join([k + ' ' + v for k, v in list(self.cloud.items())])
         openstackcmd = 'openstack ' + param
         cmd = ' '.join([openstackcmd, 'network set --name', network_name, 'ONAP-NW1'])
         os.popen(cmd)
@@ -223,7 +219,7 @@ class VcpeCommon:
         set subnet name to vcpe_net_cpe_signal_subnet_201711281221
         :return:
         """
-        param = ' '.join([k + ' ' + v for k, v in self.cloud.items()])
+        param = ' '.join([k + ' ' + v for k, v in list(self.cloud.items())])
         openstackcmd = 'openstack ' + param
 
         # expected results: | subnets | subnet_id |
@@ -271,10 +267,10 @@ class VcpeCommon:
         :param sz: a string
         :return: the first IP address matching the network, e.g. 10.5.12.3
         """
-        network = ipaddress.ip_network(unicode('{0}/{1}'.format(net_addr, net_addr_len)), strict=False)
+        network = ipaddress.ip_network(str('{0}/{1}'.format(net_addr, net_addr_len)), strict=False)
         ip_list = re.findall(r'[0-9]+(?:\.[0-9]+){3}', sz)
         for ip in ip_list:
-            this_net = ipaddress.ip_network(unicode('{0}/{1}'.format(ip, net_addr_len)), strict=False)
+            this_net = ipaddress.ip_network(str('{0}/{1}'.format(ip, net_addr_len)), strict=False)
             if this_net == network:
                 return str(ip)
         return None

@@ -1,4 +1,3 @@
-import json
 from string import Template
 
 class StringTemplater:

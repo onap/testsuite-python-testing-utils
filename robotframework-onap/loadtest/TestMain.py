@@ -66,7 +66,7 @@ def main(argv=None):
         controller = TestController(opts)
         controller.execute()
 
-    except Exception, e:
+    except Exception as e:
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help")
@@ -75,7 +75,7 @@ def main(argv=None):
 
 if __name__ == "__main__":
     if DEBUG:
-        print "debug"
+        print("debug")
     if TESTRUN:
         import doctest
         doctest.testmod()

@@ -29,6 +29,5 @@ class TemplatingEngine:
 
     def apply_template(self, template_location, values):
         """returns a string that is the jinja template in template_location filled in via the dictionary in values """
-        print
         template = self.jinja_env.get_template(template_location)
         return template.render(values)

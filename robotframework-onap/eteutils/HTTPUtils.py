@@ -1,6 +1,8 @@
+from six.moves.urllib.parse import urlparse
+
 import urllib
 import urllib3
-import urlparse
+
 
 class HTTPUtils:
     """HTTPUtils is common resource for simple http helper keywords."""

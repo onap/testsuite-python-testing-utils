@@ -115,7 +115,7 @@ class CsarParser:
             },
         """
         node_dic = svc_template['topology_template']['node_templates']
-        for node_name, v in node_dic.items():
+        for node_name, v in list(node_dic.items()):
             model = {
                 'modelInvariantId':  v['metadata']['invariantUUID'],
                 'modelVersionId': v['metadata']['UUID'],
@@ -177,7 +177,7 @@ class CsarParser:
             },
         """
         node_dic = svc_template['topology_template']['groups']
-        for node_name, v in node_dic.items():
+        for node_name, v in list(node_dic.items()):
             if v['type'].startswith('org.openecomp.groups.VfModule'):
                 model = {
                     'modelType': 'vfModule',
@@ -212,19 +212,19 @@ class CsarParser:
 
     def print_models(self):
         print('---------Service Model----------')
-        print(json.dumps(self.svc_model, indent=2, sort_keys=True))
+        print((json.dumps(self.svc_model, indent=2, sort_keys=True)))
 
         print('---------Network Model(s)----------')
         for model in self.net_models:
-            print(json.dumps(model, indent=2, sort_keys=True))
+            print((json.dumps(model, indent=2, sort_keys=True)))
 
         print('---------VNF Model(s)----------')
         for model in self.vnf_models:
-            print(json.dumps(model, indent=2, sort_keys=True))
+            print((json.dumps(model, indent=2, sort_keys=True)))
 
         print('---------VF Module Model(s)----------')
         for model in self.vfmodule_models:
-            print(json.dumps(model, indent=2, sort_keys=True))
+            print((json.dumps(model, indent=2, sort_keys=True)))
 
     def test(self):
         self.parse_csar('csar/service-Vcpesvcinfra111601-csar.csar')

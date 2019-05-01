@@ -62,7 +62,7 @@ class EteGatherDataListener(object):
         self.folder= ''
         self.keyfile = keyfile
         self.local_gather_data_sh = shell
-        print "EteGatherDataListener instantiated"
+        print("EteGatherDataListener instantiated")
 
     def end_test(self, name, attrs):
         if attrs['status'] == 'PASS':
@@ -74,16 +74,16 @@ class EteGatherDataListener(object):
         if (self.folder != ''):
             return
         self.folder = os.path.dirname(path)
-        print(self.folder)
+        print((self.folder))
 
     def close(self):
-        print "EteGatherDataListener tests failed=" + str(self.tests_failed)
+        print("EteGatherDataListener tests failed=" + str(self.tests_failed))
         if (self.tests_failed > 0):
             self.gather_debug_data()
 
     def gather_debug_data(self):
 
-        for application in self.APPLICATIONS.keys():
+        for application in list(self.APPLICATIONS.keys()):
             self.gather_application_data(application, self.APPLICATIONS.get(application))
 
     def gather_application_data(self, application, ip):

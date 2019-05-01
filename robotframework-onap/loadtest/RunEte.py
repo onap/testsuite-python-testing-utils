@@ -34,6 +34,6 @@ class RunEte(Thread):
             env = dict(os.environ, SOAKSUBFOLDER=self.soaksubfolder + "/")
             output = subprocess.check_output(["bash", self.robot_command, self.robot_test, self.test_number], shell=False, env=env)
             logging.info("{} ({}) {}".format(self.getName(), self.robot_test, output))
-        except Exception, e:
+        except Exception as e:
             logging.error("{} ({}) Unexpected error {}".format(self.getName(), self.robot_test, repr(e)))
         logging.info("{} ({}) ended - {}".format(self.getName(), self.robot_test, str(datetime.now())))
