@@ -1,15 +1,15 @@
 #! /usr/bin/python
 
 from datetime import datetime
-from .vcpecommon import *
-from .csar_parser import *
+from vcpeutils.vcpecommon import *
+from vcpeutils.csar_parser import *
 from robot.api import logger
+from past import builtins
 import base64
 
 
 class Preload:
     def __init__(self, vcpecommon):
-        #self.logger = logging.getLogger(__name__)
         self.logger = logger
         self.vcpecommon = vcpecommon
 
@@ -31,11 +31,11 @@ class Preload:
                         stk.append(v)
                     elif type(v) is list:
                         stk.extend(v)
-                    elif type(v) is str or type(v) is str:
+                    elif type(v) is builtins.basestring:
                         if self.vcpecommon.template_variable_symbol in v:
                             data[k] = self.replace(v, replace_dict)
                     else:
-                        self.logger.warning('Unexpected line in template: %s. Look for value %s', template_file, v)
+                        self.logger.warn('Unexpected line in template: {}. Look for value {}'.format(template_file, v))
         return json_data
 
     def reset_sniro(self):
@@ -83,6 +83,7 @@ class Preload:
         :param network_role: cpe_signal, cpe_public, brg_bng, bng_mux, mux_gw
         :param subnet_start_ip:
         :param subnet_gateway:
+        :param common_dict:
         :param name_suffix: e.g. '201711201311'
         :return:
         """
@@ -184,7 +185,7 @@ class Preload:
 
         print('---------------------------------------------------------------')
         print('Network related replacement dictionary:')
-        print((json.dumps(network_dict, indent=4, sort_keys=True)))
+        print(json.dumps(network_dict, indent=4, sort_keys=True))
         print('---------------------------------------------------------------')
 
         keys = ['infra', 'bng', 'gmux', 'brg']

@@ -33,12 +33,18 @@ setup(
         'robotframework',
         'deepdiff',
         'Jinja2',
-        'urllib3',
+        # 'urllib3', # requests gets upset if this is specified since they only work with a very
+        # narrow range of urlib3. if for some reason we remove requests, readd this back in
         'six',
-        'requests'
+        'requests',
+        'future'
     ],  # what we need
     packages=['eteutils', 'loadtest', 'vcpeutils'],       # The name of your scripts package
-    package_dir={'eteutils': 'eteutils', 'loadtest': 'loadtest', 'vcpeutils':'vcpeutils'}, # The location of your scipts package
+    package_dir={
+        'eteutils': 'eteutils',
+        'loadtest': 'loadtest',
+        'vcpeutils': 'vcpeutils'
+    },  # The location of your scipts package
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -48,5 +54,6 @@ setup(
         'Framework :: Robot Framework',
         'Framework :: Robot Framework :: Library',
         'License :: OSI Approved :: Apache Software License'
-    ]
+    ],
+    test_suite="tests.runner"
 )

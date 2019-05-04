@@ -8,6 +8,7 @@ import sys
 import ipaddress
 import requests
 
+
 class VcpeCommon:
     #############################################################################################
     #     Start: configurations that you must change for a new ONAP installation
