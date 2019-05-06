@@ -2,25 +2,21 @@
 
 import time
 
-from .csar_parser import *
-from .preload import *
-from .vcpecommon import *
+from vcpeutils.preload import *
+from vcpeutils.vcpecommon import *
+
 from robot.api import logger
 
 
 class SoUtils:
 
     def __init__(self):
-        """
-        :param api_version: must be 'v4' or 'v5'
-        """
-        self.tmp_solution_for_so_bug = False
-        #self.logger = logging.getLogger(__name__)
-        self.logger = logger 
+        self.region_name = None  # set later
+        self.tenant_id = None  # set later
+        self.logger = logger
         self.vcpecommon = VcpeCommon()
         self.api_version = 'v4'
         self.service_req_api_url = self.vcpecommon.so_req_api_url[self.api_version]
-
 
     def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
         """
@@ -60,12 +56,11 @@ class SoUtils:
 
         return req_id, instance_id
 
-    def check_progress(self, req_id, eta=0, interval=5):
+    def check_progress(self, req_id, interval=5):
         if not req_id:
             self.logger.error('Error when checking SO request progress, invalid request ID: ' + req_id)
             return False
         duration = 0.0
-        #bar = progressbar.ProgressBar(redirect_stdout=True)
         url = self.vcpecommon.so_check_progress_api_url + '/' + req_id
 
         while True:
@@ -74,15 +69,10 @@ class SoUtils:
             response = r.json()
 
             duration += interval
-            if eta > 0:
-                percentage = min(95, 100 * duration / eta)
-            else:
-                percentage = int(response['request']['requestStatus']['percentProgress'])
 
             if response['request']['requestStatus']['requestState'] == 'IN_PROGRESS':
                 self.logger.debug('------------------Request Status-------------------------------')
                 self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-                #bar.update(percentage)
             else:
                 self.logger.debug('---------------------------------------------------------------')
                 self.logger.debug('----------------- Creation Request Results --------------------')
@@ -92,11 +82,10 @@ class SoUtils:
                 if not flag:
                     self.logger.error('Request failed.')
                     self.logger.error(json.dumps(response, indent=4, sort_keys=True))
-                #bar.update(100)
-                #bar.finish()
                 return flag
 
-    def add_req_info(self, req_details, instance_name, product_family_id=None):
+    @staticmethod
+    def add_req_info(req_details, instance_name, product_family_id=None):
         req_details['requestInfo'] = {
                     'instanceName': instance_name,
                     'source': 'VID',
@@ -106,19 +95,17 @@ class SoUtils:
         if product_family_id:
             req_details['requestInfo']['productFamilyId'] = product_family_id
 
-    def add_related_instance(self, req_details, instance_id, instance_model):
+    @staticmethod
+    def add_related_instance(req_details, instance_id, instance_model):
         instance = {"instanceId": instance_id, "modelInfo": instance_model}
         if 'relatedInstanceList' not in req_details:
             req_details['relatedInstanceList'] = [{"relatedInstance": instance}]
         else:
             req_details['relatedInstanceList'].append({"relatedInstance": instance})
 
-    def generate_vnf_or_network_request(self, req_type, instance_name, vnf_or_network_model, service_instance_id,
-                                        service_model):
+    def generate_vnf_or_network_request(self, instance_name, vnf_or_network_model, service_instance_id, service_model):
         req_details = {
             'modelInfo':  vnf_or_network_model,
-            #'cloudConfiguration': {"lcpCloudRegionId": self.vcpecommon.os_region_name,
-            #                       "tenantId": self.vcpecommon.os_tenant_id},
             'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
                                    "tenantId": self.tenant_id},
             'requestParameters':  {"userParams": []},
@@ -129,11 +116,9 @@ class SoUtils:
         return {'requestDetails': req_details}
 
     def generate_vfmodule_request(self, instance_name, vfmodule_model, service_instance_id,
-                                        service_model, vnf_instance_id, vnf_model):
+                                  service_model, vnf_instance_id, vnf_model):
         req_details = {
             'modelInfo':  vfmodule_model,
-            #'cloudConfiguration': {"lcpCloudRegionId": self.vcpecommon.os_region_name,
-            #                       "tenantId": self.vcpecommon.os_tenant_id},
             'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
                                    "tenantId": self.tenant_id},
             'requestParameters': {"usePreload": 'true'}
@@ -223,35 +208,33 @@ class SoUtils:
         self.logger.info(json.dumps(req, indent=2, sort_keys=True))
         self.logger.info('Creating custom service {0}.'.format(instance_name))
         req_id, svc_instance_id = self.submit_create_req(req, 'service')
-        if not self.check_progress(req_id, 140):
+        if not self.check_progress(req_id):
             return False
         return True
 
     def wait_for_aai(self, node_type, uuid):
         self.logger.info('Waiting for AAI traversal to complete...')
-        #bar = progressbar.ProgressBar()
         for i in range(30):
             time.sleep(1)
-            #bar.update(i*100.0/30)
             if self.vcpecommon.is_node_in_aai(node_type, uuid):
-                #bar.update(100)
-                #bar.finish()
                 return
 
         self.logger.error("AAI traversal didn't finish in 30 seconds. Something is wrong. Type {0}, UUID {1}".format(
             node_type, uuid))
         sys.exit()
 
-    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, name_suffix, region_name, tenant_id, heatbridge=False):
+    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, name_suffix, region_name, tenant_id):
         """
         :param csar_file:
         :param vnf_template_file:
         :param preload_dict:
         :param name_suffix:
+        :param region_name:
+        :param tenant_id
         :return:  service instance UUID
         """
-        self.region_name=region_name
-        self.tenant_id=tenant_id
+        self.region_name = region_name
+        self.tenant_id = tenant_id
         self.logger.info('\n----------------------------------------------------------------------------------')
         self.logger.info('Start to create entire service defined in csar: {0}'.format(csar_file))
         parser = CsarParser()
@@ -266,13 +249,13 @@ class SoUtils:
         instance_name = '_'.join([self.vcpecommon.instance_name_prefix['service'],
                                   parser.svc_model['modelName'], global_timestamp, name_suffix])
         instance_name = instance_name.lower()
-        instance_name = instance_name.replace(' ','')
-        instance_name = instance_name.replace(':','')
+        instance_name = instance_name.replace(' ', '')
+        instance_name = instance_name.replace(':', '')
         self.logger.info('Creating service instance: {0}.'.format(instance_name))
         req = self.generate_service_request(instance_name, parser.svc_model)
         self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
         req_id, svc_instance_id = self.submit_create_req(req, 'service')
-        if not self.check_progress(req_id, eta=2, interval=5):
+        if not self.check_progress(req_id, interval=5):
             return None
 
         # wait for AAI to complete traversal
@@ -284,11 +267,10 @@ class SoUtils:
             network_name = '_'.join([self.vcpecommon.instance_name_prefix['network'], base_name, name_suffix])
             network_name = network_name.lower()
             self.logger.info('Creating network: ' + network_name)
-            req = self.generate_vnf_or_network_request('network', network_name, model, svc_instance_id,
-                                                       parser.svc_model)
+            req = self.generate_vnf_or_network_request(network_name, model, svc_instance_id, parser.svc_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
             req_id, net_instance_id = self.submit_create_req(req, 'network', svc_instance_id)
-            if not self.check_progress(req_id, eta=20):
+            if not self.check_progress(req_id):
                 return None
 
             self.logger.info('Changing subnet name to ' + self.vcpecommon.network_name_to_subnet_name(network_name))
@@ -304,7 +286,6 @@ class SoUtils:
                 self.logger.error('Failed to change subnet name for ' + network_name)
                 return None
 
-
         vnf_model = None
         vnf_instance_id = None
         # create VNF
@@ -313,14 +294,13 @@ class SoUtils:
             vnf_instance_name = '_'.join([self.vcpecommon.instance_name_prefix['vnf'],
                                           vnf_model['modelCustomizationName'].split(' ')[0],  name_suffix])
             vnf_instance_name = vnf_instance_name.lower()
-            vnf_instance_name = vnf_instance_name.replace(' ','')
-            vnf_instance_name = vnf_instance_name.replace(':','')
+            vnf_instance_name = vnf_instance_name.replace(' ', '')
+            vnf_instance_name = vnf_instance_name.replace(':', '')
             self.logger.info('Creating VNF: ' + vnf_instance_name)
-            req = self.generate_vnf_or_network_request('vnf', vnf_instance_name, vnf_model, svc_instance_id,
-                                                       parser.svc_model)
+            req = self.generate_vnf_or_network_request(vnf_instance_name, vnf_model, svc_instance_id, parser.svc_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
             req_id, vnf_instance_id = self.submit_create_req(req, 'vnf', svc_instance_id)
-            if not self.check_progress(req_id, eta=2, interval=5):
+            if not self.check_progress(req_id, interval=5):
                 self.logger.error('Failed to create VNF {0}.'.format(vnf_instance_name))
                 return False
 
@@ -346,21 +326,15 @@ class SoUtils:
             vfmodule_instance_name = '_'.join([self.vcpecommon.instance_name_prefix['vfmodule'],
                                                model['modelCustomizationName'].split('..')[0], name_suffix])
             vfmodule_instance_name = vfmodule_instance_name.lower()
-            vfmodule_instance_name = vfmodule_instance_name.replace(' ','')
-            vfmoduel_instance_name = vfmodule_instance_name.replace(':','')
+            vfmodule_instance_name = vfmodule_instance_name.replace(' ', '')
+            vfmodule_instance_name = vfmodule_instance_name.replace(':', '')
             self.logger.info('Creating VF Module: ' + vfmodule_instance_name)
             req = self.generate_vfmodule_request(vfmodule_instance_name, model, svc_instance_id, parser.svc_model,
                                                  vnf_instance_id, vnf_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
             req_id, vfmodule_instance_id = self.submit_create_req(req, 'vfmodule', svc_instance_id, vnf_instance_id)
-            if not self.check_progress(req_id, eta=70, interval=50):
+            if not self.check_progress(req_id, interval=50):
                 self.logger.error('Failed to create VF Module {0}.'.format(vfmodule_instance_name))
                 return None
-
-        # run heatbridge
-        # removed until we fold in heatbridge
-        #if heatbridge:
-            #self.vcpecommon.heatbridge(vfmodule_instance_name, svc_instance_id)
-            #self.vcpecommon.save_vgmux_vnf_name(vnf_instance_name)
 
         return svc_instance_id
