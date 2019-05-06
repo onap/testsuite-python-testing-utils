@@ -12,7 +12,7 @@ class HEATUtils:
 
     def get_yaml(self, template_file):
         """Template Yaml To Json reads a YAML Heat template file returns a JSON string that can be used included in an Openstack Add Stack Request"""
-        if isinstance(template_file, str):
+        if isinstance(template_file, str) or isinstance(template_file, unicode):
             fin = open(template_file, 'r')
             yamlobj = yaml.load(fin)
             return yamlobj
@@ -20,7 +20,8 @@ class HEATUtils:
 
     def template_yaml_to_json(self, template_file):
         """Template Yaml To Json reads a YAML Heat template file returns a JSON string that can be used included in an Openstack Add Stack Request"""
-        if isinstance(template_file, str):
+        contents = None
+        if isinstance(template_file, str) or isinstance(template_file, unicode):
             fin = open(template_file, 'r')
             yamlobj = yaml.load(fin)
             fin.close()
@@ -35,7 +36,7 @@ class HEATUtils:
 
     def env_yaml_to_json(self, template_file):
         """Env Yaml To JSon reads a YAML Heat env file and returns a JSON string that can be used included in an Openstack Add Stack Request"""
-        if isinstance(template_file, str):
+        if isinstance(template_file, str) or isinstance(template_file, unicode):
             fin = open(template_file, 'r')
             yamlobj = yaml.load(fin)
             fin.close()
