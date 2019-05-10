@@ -2,25 +2,30 @@ import json
 
 from deepdiff import DeepDiff
 
+
 class JSONUtils:
     """JSONUtils is common resource for simple json helper keywords."""
-    
+
+    def __init__(self):
+        pass
+
     def json_equals(self, left, right):
-        """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them, returning if they are equal or not."""
+        """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them,
+        returning if they are equal or not."""
         if isinstance(left, str) or isinstance(left, unicode):
-            left_json = json.loads(left);
+            left_json = json.loads(left)
         else:
-            left_json = left;
+            left_json = left
         if isinstance(right, str) or isinstance(right, unicode):
-            right_json = json.loads(right);
+            right_json = json.loads(right)
         else:
-            right_json = right;
+            right_json = right
             
-        ddiff = DeepDiff(left_json, right_json, ignore_order=True);
+        ddiff = DeepDiff(left_json, right_json, ignore_order=True)
         if ddiff == {}:
-            return True;
+            return True
         else:
-            return False;
+            return False
         
     def make_list_into_dict(self, listOfDicts, key):
         """ Converts a list of dicts that contains a field that has a unique key into a dict of dicts """
@@ -32,10 +37,11 @@ class JSONUtils:
         return d
     
     def find_element_in_array(self, searchedArray, key, value):
-        """ Takes in an array and a key value, it will return the items in the array that has a key and value that matches what you pass in """
-        elements = [];
+        """ Takes in an array and a key value, it will return the items in the array that has a key and value that
+        matches what you pass in """
+        elements = []
         for item in searchedArray:
             if key in item:
                 if item[key] == value:
-                    elements.append(item);
-        return elements;
+                    elements.append(item)
+        return elements

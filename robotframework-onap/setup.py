@@ -18,7 +18,7 @@ from setuptools import setup
 setup(
     name='robotframework-onap',            # This is the name of your PyPI-package.
     keywords=["utils", "robotframework", "testing", "onap"],
-    version='0.4',                          # Update the version number for new releases
+    version='0.5',                          # Update the version number for new releases
     license="Apache 2.0",
     description='Scripts written to be used during robot framework testing',    # Info about script
     long_description="python-package that provides convenience methods to make certain tasks in robot framework easier."
