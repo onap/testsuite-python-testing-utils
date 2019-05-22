@@ -32,7 +32,8 @@ class ServiceMappingKeywords(object):
 
     @keyword
     def get_service_folder_mapping(self, alias, service):
-        """returns an array of strings with the folder where the vnf's heat files are stored """
+        """returns an array of strings with metadata that identifies the folders to be zipped and
+        uploaded to SDC for model distribution for a given Service """
         return self._service_mapping(alias, service)['GLOBAL_SERVICE_FOLDER_MAPPING'][service]
 
     @keyword
@@ -42,7 +43,8 @@ class ServiceMappingKeywords(object):
 
     @keyword
     def get_service_neutron_mapping(self, alias, service):
-        """returns an array of strings that lists the neutron networks needed in this service """
+        """returns an array of strings that lists the neutron networks needed in this service.
+        Map the service to the list of Generic Neutron Networks to be orchestrated """
         return self._service_mapping(alias, service)['GLOBAL_SERVICE_GEN_NEUTRON_NETWORK_MAPPING'][service]
 
     @keyword
@@ -52,13 +54,16 @@ class ServiceMappingKeywords(object):
 
     @keyword
     def get_service_template_mapping(self, alias, service, vnf):
-        """returns an array of strings that are the heat templates for this vnf """
+        """returns an array of strings that are the heat templates for this vnf. This metadata identifes the preloads
+        that need to be done for a VNF as there may be more than one (vLB) "template" maps to the parameters
+        in the preload_paramenters.py """
         return self._service_mapping(alias, service)['GLOBAL_SERVICE_TEMPLATE_MAPPING'][vnf]
 
     """@PendingDeprecationWarning"""
     @keyword
     def get_validate_name_mapping(self, alias, service, vnf):
-        """returns an array of strings that are the names to validate in heatbridge for the vnf """
+        """returns an array of strings that are the names to validate in heatbridge for the vnf.
+         Used by the Heatbridge Validate Query to A&AI to locate the vserver name"""
         return self._service_mapping(alias, service)['GLOBAL_VALIDATE_NAME_MAPPING'][vnf]
 
     def _service_mapping(self, alias, service):
