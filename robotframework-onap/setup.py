@@ -39,11 +39,12 @@ setup(
         'requests',
         'future'
     ],  # what we need
-    packages=['eteutils', 'loadtest', 'vcpeutils'],       # The name of your scripts package
+    packages=['eteutils', 'loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
         'eteutils': 'eteutils',
         'loadtest': 'loadtest',
-        'vcpeutils': 'vcpeutils'
+        'vcpeutils': 'vcpeutils',
+        'ONAPLibrary': 'ONAPLibrary'
     },  # The location of your scipts package
     classifiers=[
         'Development Status :: 4 - Beta',
