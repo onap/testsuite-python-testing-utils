@@ -12,24 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from robot import utils
+from robot.api.deco import keyword
 
 
-class TemplatingEngine(object):
-    """TemplateImporter is common resource for templating with strings."""
+class TemplatingKeywords(object):
+    """Templating is an ONAP resource for templating with strings in robot framework. Under the hood it uses the Jinja2
+    templating engine
+    """
 
     def __init__(self):
         self._cache = utils.ConnectionCache('No Jinja Environments created')
 
+    @keyword
     def create_environment(self, alias, templates_folder):
+        """create an environment under an alias for tempalte location"""
         jinja_env = Environment(
             loader=FileSystemLoader(templates_folder),
             autoescape=select_autoescape(['html', 'xml'])
         )
         self._cache.register(jinja_env, alias=alias)
 
+    @keyword
     def apply_template(self, alias, template_location, values):
         """returns a string that is the jinja template in template_location filled in via the dictionary in values """
         template = self._cache.switch(alias).get_template(template_location)
