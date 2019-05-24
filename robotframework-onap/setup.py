@@ -37,7 +37,8 @@ setup(
         # narrow range of urlib3. if for some reason we remove requests, readd this back in
         'six',
         'requests',
-        'future'
+        'future',
+        'robotframework-requests'
     ],  # what we need
     packages=['eteutils', 'loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
