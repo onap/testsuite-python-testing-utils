@@ -6,6 +6,7 @@ from vcpeutils.preload import *
 from vcpeutils.vcpecommon import *
 
 from robot.api import logger
+from ONAPLibrary.RequestSOKeywords import RequestSOKeywords
 
 
 class SoUtils:
@@ -17,72 +18,21 @@ class SoUtils:
         self.vcpecommon = VcpeCommon()
         self.api_version = 'v4'
         self.service_req_api_url = self.vcpecommon.so_req_api_url[self.api_version]
-
-    def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
-        """
-        POST	{serverRoot}/serviceInstances/v4
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/vnfs
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/networks
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/vnfs/{vnfInstanceId}/vfModules
-        :param req_json:
-        :param service_instance_id:  this is required only for networks, vnfs, and vf modules
-        :param req_type:
-        :param vnf_instance_id:
-        :return: req_id, instance_id
-        """
-        if req_type == 'service':
-            url = self.service_req_api_url
-        elif req_type == 'vnf':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'vnfs'])
-        elif req_type == 'network':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'networks'])
-        elif req_type == 'vfmodule':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'vnfs', vnf_instance_id, 'vfModules'])
-        else:
-            self.logger.error('Invalid request type: {0}. Can only be service/vnf/network/vfmodule'.format(req_type))
-            return None, None
-
-        self.logger.info(url)
-        r = requests.post(url, headers=self.vcpecommon.so_headers, auth=self.vcpecommon.so_userpass, json=req_json)
-        self.logger.debug(r)
-        response = r.json()
-
-        self.logger.debug('---------------------------------------------------------------')
-        self.logger.debug('------- Creation request submitted to SO, got response --------')
-        self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-        self.logger.debug('---------------------------------------------------------------')
-        req_id = response.get('requestReferences', {}).get('requestId', '')
-        instance_id = response.get('requestReferences', {}).get('instanceId', '')
-
-        return req_id, instance_id
+        self.request_keywords = RequestSOKeywords()
 
     def check_progress(self, req_id, interval=5):
         if not req_id:
             self.logger.error('Error when checking SO request progress, invalid request ID: ' + req_id)
             return False
-        duration = 0.0
-        url = self.vcpecommon.so_check_progress_api_url + '/' + req_id
 
-        while True:
-            time.sleep(interval)
-            r = requests.get(url, headers=self.vcpecommon.so_headers, auth=self.vcpecommon.so_userpass)
-            response = r.json()
-
-            duration += interval
-
-            if response['request']['requestStatus']['requestState'] == 'IN_PROGRESS':
-                self.logger.debug('------------------Request Status-------------------------------')
-                self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-            else:
-                self.logger.debug('---------------------------------------------------------------')
-                self.logger.debug('----------------- Creation Request Results --------------------')
-                self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-                self.logger.debug('---------------------------------------------------------------')
-                flag = response['request']['requestStatus']['requestState'] == 'COMPLETE'
-                if not flag:
-                    self.logger.error('Request failed.')
-                    self.logger.error(json.dumps(response, indent=4, sort_keys=True))
-                return flag
+        response = self.request_keywords.run_polling_get_request(
+            self.vcpecommon.so_check_progress_api_url, '/' + req_id,
+            auth=self.vcpecommon.so_userpass, tries=500, interval=interval)
+        flag = response['request']['requestStatus']['requestState'] == 'COMPLETE'
+        if not flag:
+            self.logger.error('Request failed.')
+            self.logger.error(json.dumps(response, indent=4, sort_keys=True))
+        return flag
 
     @staticmethod
     def add_req_info(req_details, instance_name, product_family_id=None):
@@ -207,7 +157,8 @@ class SoUtils:
         req = self.generate_custom_service_request(instance_name, parser.svc_model, brg_mac)
         self.logger.info(json.dumps(req, indent=2, sort_keys=True))
         self.logger.info('Creating custom service {0}.'.format(instance_name))
-        req_id, svc_instance_id = self.submit_create_req(req, 'service')
+        req_id, svc_instance_id = self.request_keywords.run_create_request(
+            self.service_req_api_url, "/", req, auth=self.vcpecommon.so_userpass)
         if not self.check_progress(req_id):
             return False
         return True
@@ -254,7 +205,8 @@ class SoUtils:
         self.logger.info('Creating service instance: {0}.'.format(instance_name))
         req = self.generate_service_request(instance_name, parser.svc_model)
         self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-        req_id, svc_instance_id = self.submit_create_req(req, 'service')
+        req_id, svc_instance_id = self.request_keywords.run_create_request(
+            self.service_req_api_url, "/", req, auth=self.vcpecommon.so_userpass)
         if not self.check_progress(req_id, interval=5):
             return None
 
@@ -269,7 +221,9 @@ class SoUtils:
             self.logger.info('Creating network: ' + network_name)
             req = self.generate_vnf_or_network_request(network_name, model, svc_instance_id, parser.svc_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, net_instance_id = self.submit_create_req(req, 'network', svc_instance_id)
+            req_id, net_instance_id = self.request_keywords.run_create_request(
+                self.service_req_api_url, '/'.join([svc_instance_id, 'networks']), req,
+                auth=self.vcpecommon.so_userpass)
             if not self.check_progress(req_id):
                 return None
 
@@ -299,7 +253,9 @@ class SoUtils:
             self.logger.info('Creating VNF: ' + vnf_instance_name)
             req = self.generate_vnf_or_network_request(vnf_instance_name, vnf_model, svc_instance_id, parser.svc_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, vnf_instance_id = self.submit_create_req(req, 'vnf', svc_instance_id)
+            req_id, vnf_instance_id = self.request_keywords.run_create_request(
+                self.service_req_api_url, '/'.join([svc_instance_id, 'vnfs']), req,
+                auth=self.vcpecommon.so_userpass)
             if not self.check_progress(req_id, interval=5):
                 self.logger.error('Failed to create VNF {0}.'.format(vnf_instance_name))
                 return False
@@ -332,7 +288,9 @@ class SoUtils:
             req = self.generate_vfmodule_request(vfmodule_instance_name, model, svc_instance_id, parser.svc_model,
                                                  vnf_instance_id, vnf_model)
             self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, vfmodule_instance_id = self.submit_create_req(req, 'vfmodule', svc_instance_id, vnf_instance_id)
+            req_id, vfmodule_instance_id = self.request_keywords.run_create_request(
+                self.service_req_api_url, '/'.join([svc_instance_id, 'vnfs', vnf_instance_id, 'vfModules']),
+                req, auth=self.vcpecommon.so_userpass)
             if not self.check_progress(req_id, interval=50):
                 self.logger.error('Failed to create VF Module {0}.'.format(vfmodule_instance_name))
                 return None
