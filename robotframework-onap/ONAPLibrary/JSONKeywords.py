@@ -22,7 +22,7 @@ class JSONKeywords(object):
     """
 
     def __init__(self):
-        pass
+        super(JSONKeywords, self).__init__()
 
     @keyword
     def json_equals(self, left, right):

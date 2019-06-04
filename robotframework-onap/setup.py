@@ -38,7 +38,8 @@ setup(
         'six',
         'requests',
         'future',
-        'robotframework-requests'
+        'robotframework-requests',
+        'pykafka'
     ],  # what we need
     packages=['eteutils', 'loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
