@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47b523e1_f0d82bf8",
+        "filename": "robotframework-onap/eteutils/HTTPUtils.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3949
+      },
+      "writtenOn": "2019-06-06T08:20:43Z",
+      "side": 1,
+      "message": "There is nothing in the implementation of this method that limits it to certification warnings or to A\u0026AI API calls, so limiting the description to either is inappropriate",
+      "range": {
+        "startLine": 15,
+        "startChar": 12,
+        "endLine": 15,
+        "endChar": 56
+      },
+      "revId": "6f89c1604c1f92710a90f9ec4519b3356c35534d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
