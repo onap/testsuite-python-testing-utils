@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "e0c4fe77_83603e46",
+        "filename": "robotframework-onap/eteutils/HTTPUtils.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5335
+      },
+      "writtenOn": "2019-06-06T08:43:25Z",
+      "side": 1,
+      "message": "Also, all the methods in the class can be static -\u003e in this class we don\u0027t have any fields and in all class method, any different method from class isn\u0027t used.\ne.g\n@staticmethod\ndef url_encode_string(barestring):",
+      "revId": "6f89c1604c1f92710a90f9ec4519b3356c35534d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "47b523e1_f0d82bf8",
         "filename": "robotframework-onap/eteutils/HTTPUtils.py",
         "patchSetId": 1
