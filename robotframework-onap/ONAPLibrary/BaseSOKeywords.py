@@ -16,7 +16,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
-from eteutils.UUID import UUID
+from ONAPLibrary.Utilities import Utilities
 
 
 class BaseSOKeywords(object):
@@ -26,7 +26,7 @@ class BaseSOKeywords(object):
     def __init__(self):
         super(BaseSOKeywords, self).__init__()
         self.application_id = "robot-ete"
-        self.uuid = UUID()
+        self.uuid = Utilities()
         self.builtin = BuiltIn()
 
     @keyword
@@ -56,7 +56,7 @@ class BaseSOKeywords(object):
 
     def create_headers(self, accept="application/json"):
         """Create the headers that are used by so"""
-        uuid = self.uuid.generate_UUID()
+        uuid = self.uuid.generate_uuid4()
         headers = {
             "Accept": accept,
             "Content-Type": "application/json",
