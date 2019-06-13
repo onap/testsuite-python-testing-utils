@@ -14,13 +14,15 @@
 
 from ONAPLibrary.robotlibcore import HybridCore
 from ONAPLibrary.DNSKeywords import DNSKeywords
+from ONAPLibrary.UUIDKeywords import UUIDKeywords
 
 
-class DNS(HybridCore):
+class Utilities(HybridCore):
     """ DNS Keywords are useful for DNS requests """
 
     def __init__(self):
         self.keyword_implementors = [
-            DNSKeywords()
+            DNSKeywords(),
+            UUIDKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)
