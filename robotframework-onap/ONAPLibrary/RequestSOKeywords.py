@@ -16,8 +16,6 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
-from eteutils.UUID import UUID
-
 
 class RequestSOKeywords(object):
     """SO is an ONAP testing library for Robot Framework that provides functionality for interacting with the serivce
@@ -26,7 +24,6 @@ class RequestSOKeywords(object):
     def __init__(self):
         super(RequestSOKeywords, self).__init__()
         self.application_id = "robot-ete"
-        self.uuid = UUID()
         self.builtin = BuiltIn()
         self.base_keywords = BaseSOKeywords()
 
