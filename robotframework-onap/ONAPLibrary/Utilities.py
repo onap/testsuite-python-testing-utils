@@ -16,6 +16,7 @@ from ONAPLibrary.robotlibcore import HybridCore
 from ONAPLibrary.DNSKeywords import DNSKeywords
 from ONAPLibrary.SocketKeywords import SocketKeywords
 from ONAPLibrary.UUIDKeywords import UUIDKeywords
+from ONAPLibrary.HTTPKeywords import HTTPKeywords
 
 
 class Utilities(HybridCore):
@@ -25,6 +26,7 @@ class Utilities(HybridCore):
         self.keyword_implementors = [
             DNSKeywords(),
             SocketKeywords(),
-            UUIDKeywords()
+            UUIDKeywords(),
+            HTTPKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)
