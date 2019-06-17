@@ -14,6 +14,7 @@
 
 from six.moves import urllib
 from robot.api.deco import keyword
+import urllib3
 
 
 class HTTPKeywords(object):
@@ -30,3 +31,8 @@ class HTTPKeywords(object):
     def url_parse(self, url):
         """  Get pieces of the URL """
         return urllib.parse.urlparse(url)
+
+    @keyword
+    def disable_warnings(self):
+        """  Disable all warnings when creating sessions """
+        urllib3.disable_warnings()
