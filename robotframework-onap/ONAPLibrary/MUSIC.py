@@ -12,21 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from six.moves import urllib
-from robot.api.deco import keyword
+from ONAPLibrary.robotlibcore import HybridCore
+from ONAPLibrary.MUSICKeywords import MUSICKeywords
 
 
-class HTTPKeywords(object):
-    """HTTPKeywords is common resource for simple http helper keywords."""
+class MUSIC(HybridCore):
+    """MUSIC is an ONAP testing library for Robot Framework that provides functionality for interacting with the music
+    component. """
+
     def __init__(self):
-        super(HTTPKeywords, self).__init__()
-
-    @keyword
-    def url_encode_string(self, barestring):
-        """URL Encode String takes in a string and converts it into fully 'percent-encoded' string"""
-        return urllib.parse.quote(barestring)
-
-    @keyword
-    def url_parse(self, url):
-        """  Get pieces of the URL """
-        return urllib.parse.urlparse(url)
+        self.keyword_implementors = [
+            MUSICKeywords()
+        ]
+        HybridCore.__init__(self, self.keyword_implementors)
