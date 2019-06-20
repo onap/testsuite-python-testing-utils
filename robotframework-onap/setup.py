@@ -42,9 +42,8 @@ setup(
         'kafka-python',
         'urllib3'
     ],  # what we need
-    packages=['eteutils', 'loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
+    packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
-        'eteutils': 'eteutils',
         'loadtest': 'loadtest',
         'vcpeutils': 'vcpeutils',
         'ONAPLibrary': 'ONAPLibrary'
