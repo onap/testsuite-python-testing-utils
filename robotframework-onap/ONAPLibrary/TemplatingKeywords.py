@@ -15,6 +15,7 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from robot import utils
 from robot.api.deco import keyword
+from string import Template
 
 
 class TemplatingKeywords(object):
@@ -39,3 +40,8 @@ class TemplatingKeywords(object):
         """returns a string that is the jinja template in template_location filled in via the dictionary in values """
         template = self._cache.switch(alias).get_template(template_location)
         return template.render(values)
+
+    @keyword
+    def template_string(self, template, values):
+        """Template String takes in a string and its values and converts it using the string.Template class"""
+        return Template(template).substitute(values)
