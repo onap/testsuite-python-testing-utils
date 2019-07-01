@@ -38,7 +38,8 @@ setup(
         'future',
         'robotframework-requests',
         'kafka-python',
-        'urllib3'
+        'urllib3',
+        'jsonpath-rw'
     ],  # what we need
     packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
