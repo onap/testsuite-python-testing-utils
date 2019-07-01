@@ -15,8 +15,20 @@ class SoUtils:
         self.tenant_id = None  # set later
         self.logger = logger
         self.vcpecommon = VcpeCommon()
-        self.api_version = 'v4'
-        self.service_req_api_url = self.vcpecommon.so_req_api_url[self.api_version]
+
+        # SO urls, note: do NOT add a '/' at the end of the url
+        self.so_nbi_port = '8080'
+        self.so_host = 'so.onap'
+        self.so_si_path = '/onap/so/infra/serviceInstantiation/v7/serviceInstances'
+        self.so_orch_path = '/onap/so/infra/orchestrationRequests/v6'
+        self.service_req_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port + self.so_si_path
+        self.so_check_progress_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port + self.so_orch_path
+        self.so_userpass = 'InfraPortalClient', 'password1$'
+        self.so_headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        self.so_db_name = 'catalogdb'
+        self.so_db_user = 'root'
+        self.so_db_pass = 'password'
+        self.so_db_port = '30252'
 
     def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
         """
@@ -43,7 +55,7 @@ class SoUtils:
             return None, None
 
         self.logger.info(url)
-        r = requests.post(url, headers=self.vcpecommon.so_headers, auth=self.vcpecommon.so_userpass, json=req_json)
+        r = requests.post(url, headers=self.so_headers, auth=self.so_userpass, json=req_json)
         self.logger.debug(r)
         response = r.json()
 
@@ -61,11 +73,11 @@ class SoUtils:
             self.logger.error('Error when checking SO request progress, invalid request ID: ' + req_id)
             return False
         duration = 0.0
-        url = self.vcpecommon.so_check_progress_api_url + '/' + req_id
+        url = self.so_check_progress_api_url + '/' + req_id
 
         while True:
             time.sleep(interval)
-            r = requests.get(url, headers=self.vcpecommon.so_headers, auth=self.vcpecommon.so_userpass)
+            r = requests.get(url, headers=self.so_headers, auth=self.so_userpass)
             response = r.json()
 
             duration += interval

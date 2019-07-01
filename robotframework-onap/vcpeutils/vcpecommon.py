@@ -1,11 +1,7 @@
 import json
 import logging
 import os
-import pickle
-import re
 import sys
-
-import ipaddress
 import requests
 
 
@@ -16,23 +12,22 @@ class VcpeCommon:
     external_net_prefix_len = 16
     #############################################################################################
     # set the openstack cloud access credentials here
-    oom_mode = True
 
     cloud = {
         '--os-auth-url': 'http://10.12.25.2:5000',
         '--os-username': 'kxi',
         '--os-user-domain-id': 'default',
         '--os-project-domain-id': 'default',
-        '--os-tenant-id': '09d8566ea45e43aa974cf447ed591d77' if oom_mode else '1e097c6713e74fd7ac8e4295e605ee1e',
+        '--os-tenant-id': '09d8566ea45e43aa974cf447ed591d77',
         '--os-region-name': 'RegionOne',
         '--os-password': 'n3JhGMGuDzD8',
-        '--os-project-domain-name': 'Integration-SB-03' if oom_mode else 'Integration-SB-07',
+        '--os-project-domain-name': 'Integration-SB-03',
         '--os-identity-api-version': '3'
     }
 
     common_preload_config = {
-        'oam_onap_net': 'oam_network_2No2' if oom_mode else 'oam_onap_lAky',
-        'oam_onap_subnet': 'oam_network_2No2' if oom_mode else 'oam_onap_lAky',
+        'oam_onap_net': 'oam_network_2No2',
+        'oam_onap_subnet': 'oam_network_2No2',
         'public_net': 'external',
         'public_net_id': '971040b2-7059-49dc-b220-4fab50cb2ad4'
     }
@@ -90,7 +85,7 @@ class VcpeCommon:
         #self.mr_ip_port = '30227'
         self.mr_ip_port = '3904'
         #self.so_nbi_port = '30277' if self.oom_mode else '8080'
-        self.so_nbi_port = '8080' 
+
         #self.sdnc_preloading_port = '30202' if self.oom_mode else '8282'
         self.sdnc_preloading_port = '8282'
         #self.aai_query_port = '30233' if self.oom_mode else '8443'
@@ -150,18 +145,6 @@ class VcpeCommon:
                                     ':' + self.sdnc_preloading_port + '/restconf/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation'
         self.sdnc_ar_cleanup_url = 'http://' + self.hosts['sdnc'] + ':' + self.sdnc_preloading_port + \
                                    '/restconf/config/GENERIC-RESOURCE-API:'
-
-        #############################################################################################
-        # SO urls, note: do NOT add a '/' at the end of the url
-        self.so_req_api_url = {'v4': 'http://' + self.hosts['so'] + ':' + self.so_nbi_port + '/onap/so/infra/serviceInstantiation/v7/serviceInstances',
-                           'v5': 'http://' + self.hosts['so'] + ':' + self.so_nbi_port + '/onap/so/infra/serviceInstantiation/v7/serviceInstances'}
-        self.so_check_progress_api_url = 'http://' + self.hosts['so'] + ':' + self.so_nbi_port + '/onap/so/infra/orchestrationRequests/v6'
-        self.so_userpass = 'InfraPortalClient', 'password1$'
-        self.so_headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-        self.so_db_name = 'catalogdb'
-        self.so_db_user = 'root'
-        self.so_db_pass = 'password'
-        self.so_db_port = '30252' if self.oom_mode else '32769'
 
         self.vpp_inf_url = 'http://{0}:8183/restconf/config/ietf-interfaces:interfaces'
         self.vpp_api_headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -259,64 +242,3 @@ class VcpeCommon:
         self.logger.debug('aai query: ' + url)
         self.logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
         return 'result-data' in response
-
-    @staticmethod
-    def extract_ip_from_str(net_addr, net_addr_len, sz):
-        """
-        :param net_addr:  e.g. 10.5.12.0
-        :param net_addr_len: e.g. 24
-        :param sz: a string
-        :return: the first IP address matching the network, e.g. 10.5.12.3
-        """
-        network = ipaddress.ip_network(str('{0}/{1}'.format(net_addr, net_addr_len)), strict=False)
-        ip_list = re.findall(r'[0-9]+(?:\.[0-9]+){3}', sz)
-        for ip in ip_list:
-            this_net = ipaddress.ip_network(str('{0}/{1}'.format(ip, net_addr_len)), strict=False)
-            if this_net == network:
-                return str(ip)
-        return None
-
-
-
-    @staticmethod
-    def save_object(obj, filepathname):
-        with open(filepathname, 'wb') as fout:
-            pickle.dump(obj, fout)
-
-    @staticmethod
-    def load_object(filepathname):
-        with open(filepathname, 'rb') as fin:
-            return pickle.load(fin)
-
-    @staticmethod
-    def increase_ip_address_or_vni_in_template(vnf_template_file, vnf_parameter_name_list):
-        with open(vnf_template_file) as json_input:
-            json_data = json.load(json_input)
-            param_list = json_data['VNF-API:input']['VNF-API:vnf-topology-information']['VNF-API:vnf-parameters']
-            for param in param_list:
-                if param['vnf-parameter-name'] in vnf_parameter_name_list:
-                    ipaddr_or_vni = param['vnf-parameter-value'].split('.')
-                    number = int(ipaddr_or_vni[-1])
-                    if 254 == number:
-                        number = 10
-                    else:
-                        number = number + 1
-                    ipaddr_or_vni[-1] = str(number)
-                    param['vnf-parameter-value'] = '.'.join(ipaddr_or_vni)
-
-        assert json_data is not None
-        with open(vnf_template_file, 'w') as json_output:
-            json.dump(json_data, json_output, indent=4, sort_keys=True)
-
-    def save_preload_data(self, preload_data):
-        self.save_object(preload_data, self.preload_dict_file)
-
-    def load_preload_data(self):
-        return self.load_object(self.preload_dict_file)
-
-    def save_vgmux_vnf_name(self, vgmux_vnf_name):
-        self.save_object(vgmux_vnf_name, self.vgmux_vnf_name_file)
-
-    def load_vgmux_vnf_name(self):
-        return self.load_object(self.vgmux_vnf_name_file)
-

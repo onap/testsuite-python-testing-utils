@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 from robot import utils
 from robot.api.deco import keyword
 from string import Template
@@ -30,8 +30,7 @@ class TemplatingKeywords(object):
     def create_environment(self, alias, templates_folder):
         """create an environment under an alias for tempalte location"""
         jinja_env = Environment(
-            loader=FileSystemLoader(templates_folder),
-            autoescape=select_autoescape(['html', 'xml'])
+            loader=FileSystemLoader(templates_folder)
         )
         self._cache.register(jinja_env, alias=alias)
 

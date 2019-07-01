@@ -33,8 +33,6 @@ setup(
         'robotframework',
         'deepdiff',
         'Jinja2',
-        # 'urllib3', # requests gets upset if this is specified since they only work with a very
-        # narrow range of urlib3. if for some reason we remove requests, readd this back in
         'six',
         'requests',
         'future',
