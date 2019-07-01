@@ -14,6 +14,7 @@
 
 from ONAPLibrary.robotlibcore import HybridCore
 from ONAPLibrary.JSONKeywords import JSONKeywords
+from ONAPLibrary.JSONPathKeywords import JSONPathKeywords
 
 
 class JSON(HybridCore):
@@ -22,6 +23,7 @@ class JSON(HybridCore):
 
     def __init__(self):
         self.keyword_implementors = [
-            JSONKeywords()
+            JSONKeywords(),
+            JSONPathKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)
