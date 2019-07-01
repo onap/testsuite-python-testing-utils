@@ -6,6 +6,9 @@ from vcpeutils.preload import *
 from vcpeutils.vcpecommon import *
 
 from robot.api import logger
+from datetime import datetime
+import urllib3
+import sys
 
 
 class SoUtils:
@@ -29,6 +32,27 @@ class SoUtils:
         self.so_db_user = 'root'
         self.so_db_pass = 'password'
         self.so_db_port = '30252'
+
+        # aai urls
+        self.aai_userpass = 'AAI', 'AAI'
+        self.aai_query_port = '8443'
+        self.aai_host = 'aai.onap'
+
+        # properties
+        self.homing_solution = 'sniro'  # value is either 'sniro' or 'oof'
+        self.customer_location_used_by_oof = {
+            "customerLatitude": "32.897480",
+            "customerLongitude": "-97.040443",
+            "customerName": "some_company"
+        }
+        self.product_family_id = 'f9457e8c-4afd-45da-9389-46acd9bf5116'
+        self.custom_product_family_id = 'a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb'
+        self.instance_name_prefix = {
+            'service': 'svc',
+            'network': 'net',
+            'vnf': 'vnf',
+            'vfmodule': 'vf'
+        }
 
     def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
         """
@@ -123,7 +147,7 @@ class SoUtils:
             'requestParameters':  {"userParams": []},
             'platform': {"platformName": "Platform-Demonstration"}
         }
-        self.add_req_info(req_details, instance_name, self.vcpecommon.product_family_id)
+        self.add_req_info(req_details, instance_name, self.product_family_id)
         self.add_related_instance(req_details, service_instance_id, service_model)
         return {'requestDetails': req_details}
 
@@ -135,7 +159,7 @@ class SoUtils:
                                    "tenantId": self.tenant_id},
             'requestParameters': {"usePreload": 'true'}
         }
-        self.add_req_info(req_details, instance_name, self.vcpecommon.product_family_id)
+        self.add_req_info(req_details, instance_name, self.product_family_id)
         self.add_related_instance(req_details, service_instance_id, service_model)
         self.add_related_instance(req_details, vnf_instance_id, vnf_model)
         return {'requestDetails': req_details}
@@ -187,18 +211,18 @@ class SoUtils:
                     },
                     {
                          "name": "Customer_Location",
-                         "value": self.vcpecommon.customer_location_used_by_oof
+                         "value": self.customer_location_used_by_oof
                     },
                     {
                          "name": "Homing_Solution",
-                         "value": self.vcpecommon.homing_solution
+                         "value": self.homing_solution
                     }
                 ],
                 "subscriptionServiceType": "vCPE",
                 'aLaCarte': 'false'
             }
         }
-        self.add_req_info(req_details, instance_name, self.vcpecommon.custom_product_family_id)
+        self.add_req_info(req_details, instance_name, self.custom_product_family_id)
         self.add_project_info(req_details)
         self.add_owning_entity(req_details)
         return {'requestDetails': req_details}
@@ -213,7 +237,7 @@ class SoUtils:
             name_suffix = '_' + datetime.now().strftime('%Y%m%d%H%M')
 
         # create service
-        instance_name = '_'.join([self.vcpecommon.instance_name_prefix['service'],
+        instance_name = '_'.join([self.instance_name_prefix['service'],
                                   parser.svc_model['modelName'][0:10], name_suffix])
         instance_name = instance_name.lower()
         req = self.generate_custom_service_request(instance_name, parser.svc_model, brg_mac)
@@ -228,7 +252,7 @@ class SoUtils:
         self.logger.info('Waiting for AAI traversal to complete...')
         for i in range(30):
             time.sleep(1)
-            if self.vcpecommon.is_node_in_aai(node_type, uuid):
+            if self.is_node_in_aai(node_type, uuid):
                 return
 
         self.logger.error("AAI traversal didn't finish in 30 seconds. Something is wrong. Type {0}, UUID {1}".format(
@@ -258,7 +282,7 @@ class SoUtils:
         # Set Global timestamp for instancenames
         global_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         # create service
-        instance_name = '_'.join([self.vcpecommon.instance_name_prefix['service'],
+        instance_name = '_'.join([self.instance_name_prefix['service'],
                                   parser.svc_model['modelName'], global_timestamp, name_suffix])
         instance_name = instance_name.lower()
         instance_name = instance_name.replace(' ', '')
@@ -276,7 +300,7 @@ class SoUtils:
         # create networks
         for model in parser.net_models:
             base_name = model['modelCustomizationName'].lower().replace('mux_vg', 'mux_gw')
-            network_name = '_'.join([self.vcpecommon.instance_name_prefix['network'], base_name, name_suffix])
+            network_name = '_'.join([self.instance_name_prefix['network'], base_name, name_suffix])
             network_name = network_name.lower()
             self.logger.info('Creating network: ' + network_name)
             req = self.generate_vnf_or_network_request(network_name, model, svc_instance_id, parser.svc_model)
@@ -303,7 +327,7 @@ class SoUtils:
         # create VNF
         if len(parser.vnf_models) == 1:
             vnf_model = parser.vnf_models[0]
-            vnf_instance_name = '_'.join([self.vcpecommon.instance_name_prefix['vnf'],
+            vnf_instance_name = '_'.join([self.instance_name_prefix['vnf'],
                                           vnf_model['modelCustomizationName'].split(' ')[0],  name_suffix])
             vnf_instance_name = vnf_instance_name.lower()
             vnf_instance_name = vnf_instance_name.replace(' ', '')
@@ -335,7 +359,7 @@ class SoUtils:
                 sys.exit()
 
             model = parser.vfmodule_models[0]
-            vfmodule_instance_name = '_'.join([self.vcpecommon.instance_name_prefix['vfmodule'],
+            vfmodule_instance_name = '_'.join([self.instance_name_prefix['vfmodule'],
                                                model['modelCustomizationName'].split('..')[0], name_suffix])
             vfmodule_instance_name = vfmodule_instance_name.lower()
             vfmodule_instance_name = vfmodule_instance_name.replace(' ', '')
@@ -350,3 +374,27 @@ class SoUtils:
                 return None
 
         return svc_instance_id
+
+    def is_node_in_aai(self, node_type, node_uuid):
+        key = None
+        search_node_type = None
+        if node_type == 'service':
+            search_node_type = 'service-instance'
+            key = 'service-instance-id'
+        elif node_type == 'vnf':
+            search_node_type = 'generic-vnf'
+            key = 'vnf-id'
+        else:
+            logging.error('Invalid node_type: ' + node_type)
+            sys.exit()
+
+        url = 'https://{0}:{1}/aai/v11/search/nodes-query?search-node-type={2}&filter={3}:EQUALS:{4}'.format(
+            self.aai_host, self.aai_query_port, search_node_type, key, node_uuid)
+
+        headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'X-FromAppID': 'vCPE-Robot', 'X-TransactionId': 'get_aai_subscr'}
+        urllib3.disable_warnings()
+        r = requests.get(url, headers=headers, auth=self.aai_userpass, verify=False)
+        response = r.json()
+        self.logger.debug('aai query: ' + url)
+        self.logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
+        return 'result-data' in response

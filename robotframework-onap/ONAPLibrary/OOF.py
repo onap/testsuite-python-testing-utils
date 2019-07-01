@@ -12,23 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ONAPLibrary.SNIROKeywords import SNIROKeywords
 from ONAPLibrary.robotlibcore import HybridCore
-from ONAPLibrary.DNSKeywords import DNSKeywords
-from ONAPLibrary.SocketKeywords import SocketKeywords
-from ONAPLibrary.UUIDKeywords import UUIDKeywords
-from ONAPLibrary.HTTPKeywords import HTTPKeywords
-from ONAPLibrary.Base64Keywords import Base64Keywords
 
 
-class Utilities(HybridCore):
-    """ Keywords are useful for helper functions requests """
+class OOF(HybridCore):
+    """OOF is an ONAP testing library for Robot Framework that provides functionality for interacting with the
+    optimiztion framework. """
 
     def __init__(self):
         self.keyword_implementors = [
-            DNSKeywords(),
-            SocketKeywords(),
-            UUIDKeywords(),
-            HTTPKeywords(),
-            Base64Keywords()
+            SNIROKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)
