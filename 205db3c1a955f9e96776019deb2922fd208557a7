@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Yang Xu <yang.xu@futurewei.com>
+Verified+1: Yang Xu <yang.xu@futurewei.com>
+Submitted-by: Daniel Rose <dr695h@att.com>
+Submitted-at: Mon, 08 Jul 2019 15:22:01 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/90744
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
