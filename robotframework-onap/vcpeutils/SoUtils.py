@@ -2,13 +2,13 @@
 
 import time
 
-from vcpeutils.preload import *
-from vcpeutils.vcpecommon import *
-
+from vcpeutils.csar_parser import *
+import requests
 from robot.api import logger
 from datetime import datetime
 import urllib3
 import sys
+from ONAPLibrary.PreloadSDNCKeywords import PreloadSDNCKeywords
 
 
 class SoUtils:
@@ -17,7 +17,6 @@ class SoUtils:
         self.region_name = None  # set later
         self.tenant_id = None  # set later
         self.logger = logger
-        self.vcpecommon = VcpeCommon()
 
         # SO urls, note: do NOT add a '/' at the end of the url
         self.so_nbi_port = '8080'
@@ -38,6 +37,15 @@ class SoUtils:
         self.aai_query_port = '8443'
         self.aai_host = 'aai.onap'
 
+        # mr utls
+        self.mr_ip_addr = 'mr.onap'
+        self.mr_ip_port = '3904'
+
+        # sdnc urls
+        self.sdnc_ip_addr = 'sdnc.onap'
+        self.sdnc_preloading_port = '8282'
+        self.sdnc_endpoint = 'http://' + self.sdnc_ip_addr + ':' + self.sdnc_preloading_port
+        self.sdnc_preload_vnf_url = '/restconf/operations/VNF-API:preload-vnf-topology-operation'
         # properties
         self.homing_solution = 'sniro'  # value is either 'sniro' or 'oof'
         self.customer_location_used_by_oof = {
@@ -53,6 +61,27 @@ class SoUtils:
             'vnf': 'vnf',
             'vfmodule': 'vf'
         }
+
+        # set the openstack cloud access credentials here
+        self.cloud = {
+            '--os-auth-url': 'http://10.12.25.2:5000',
+            '--os-username': 'kxi',
+            '--os-user-domain-id': 'default',
+            '--os-project-domain-id': 'default',
+            '--os-tenant-id': '09d8566ea45e43aa974cf447ed591d77',
+            '--os-region-name': 'RegionOne',
+            '--os-password': 'n3JhGMGuDzD8',
+            '--os-project-domain-name': 'Integration-SB-03',
+            '--os-identity-api-version': '3'
+        }
+
+        self.template_path = 'robot/assets/templates'
+        self.pub_key = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKXDgoo3+WOqcUG8/5uUbk81+yczgwC4Y8ywTmuQqbNxlY1oQ0YxdMUqUnhitSXs5S/yRuAVOYHwGg2mCs20oAINrP+mxBI544AMIb9itPjCtgqtE2EWo6MmnFGbHB4Sx3XioE7F4VPsh7japsIwzOjbrQe+Mua1TGQ5d4nfEOQaaglXLLPFfuc7WbhbJbK6Q7rHqZfRcOwAMXgDoBqlyqKeiKwnumddo2RyNT8ljYmvB6buz7KnMinzo7qB0uktVT05FH9Rg0CTWH5norlG5qXgP2aukL0gk1ph8iAt7uYLf1ktp+LJI2gaF6L0/qli9EmVCSLr1uJ38Q8CBflhkh'
+        self.owning_entity_name = 'OE-Demonstration1'
+        self.project_name = 'Project-Demonstration'
+        self.owning_entity_id = '520cc603-a3c4-4ec2-9ef4-ca70facd79c0'
+        self.global_subscriber_id = 'Demonstration'
+        self.vgw_VfModuleModelInvariantUuid = '26d6a718-17b2-4ba8-8691-c44343b2ecd2'
 
     def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
         """
@@ -167,7 +196,7 @@ class SoUtils:
     def generate_service_request(self, instance_name, model):
         req_details = {
             'modelInfo':  model,
-            'subscriberInfo':  {'globalSubscriberId': self.vcpecommon.global_subscriber_id},
+            'subscriberInfo':  {'globalSubscriberId': self.global_subscriber_id},
             'requestParameters': {
                 "userParams": [],
                 "subscriptionServiceType": "vCPE",
@@ -180,18 +209,18 @@ class SoUtils:
         return {'requestDetails': req_details}
 
     def add_project_info(self, req_details):
-        req_details['project'] = {'projectName': self.vcpecommon.project_name}
+        req_details['project'] = {'projectName': self.project_name}
 
     def add_owning_entity(self, req_details):
-        req_details['owningEntity'] = {'owningEntityId': self.vcpecommon.owning_entity_id,
-                                       'owningEntityName': self.vcpecommon.owning_entity_name}
+        req_details['owningEntity'] = {'owningEntityId': self.owning_entity_id,
+                                       'owningEntityName': self.owning_entity_name}
 
     def generate_custom_service_request(self, instance_name, model, brg_mac):
         brg_mac_enc = brg_mac.replace(':', '-')
         req_details = {
             'modelInfo':  model,
             'subscriberInfo':  {'subscriberName': 'Kaneohe',
-                                'globalSubscriberId': self.vcpecommon.global_subscriber_id},
+                                'globalSubscriberId': self.global_subscriber_id},
             'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
                                    "tenantId": self.tenant_id},
             'requestParameters': {
@@ -204,7 +233,7 @@ class SoUtils:
                        'name': 'VfModuleNames',
                        'value': [
                             {
-                                'VfModuleModelInvariantUuid': self.vcpecommon.vgw_VfModuleModelInvariantUuid,
+                                'VfModuleModelInvariantUuid': self.vgw_VfModuleModelInvariantUuid,
                                 'VfModuleName': 'VGW2BRG-{0}'.format(brg_mac_enc)
                             }
                        ]
@@ -309,12 +338,12 @@ class SoUtils:
             if not self.check_progress(req_id):
                 return None
 
-            self.logger.info('Changing subnet name to ' + self.vcpecommon.network_name_to_subnet_name(network_name))
-            self.vcpecommon.set_network_name(network_name)
+            self.logger.info('Changing subnet name to ' + self.network_name_to_subnet_name(network_name))
+            self.set_network_name(network_name)
             subnet_name_changed = False
             for i in range(20):
                 time.sleep(3)
-                if self.vcpecommon.set_subnet_name(network_name):
+                if self.set_subnet_name(network_name):
                     subnet_name_changed = True
                     break
 
@@ -347,10 +376,31 @@ class SoUtils:
             self.wait_for_aai('vnf', vnf_instance_id)
 
         # SDNC Preload 
+        preloader = PreloadSDNCKeywords()
+        vfmodule_name = '_'.join(['vf',
+                                  parser.vfmodule_models[0]['modelCustomizationName'].split('..')[0].lower(),
+                                  name_suffix])
 
-        preloader = Preload(self.vcpecommon)
-        preloader.preload_vfmodule(vnf_template_file, svc_instance_id, parser.vnf_models[0], parser.vfmodule_models[0],
-                                   preload_dict, name_suffix)
+        extra_preload = {
+            'pub_key': self.pub_key,
+            'vnf_type': parser.vfmodule_models[0]['modelCustomizationName'],
+            'generic_vnf_type': parser.vfmodule_models[0]['modelCustomizationName'],
+            'service_type': svc_instance_id,
+            'generic_vnf_name': vnf_model['modelCustomizationName'],
+            'vnf_name': vfmodule_name,
+            'mr_ip_addr': self.mr_ip_addr,
+            'mr_ip_port': self.mr_ip_port,
+            'sdnc_oam_ip': self.sdnc_ip_addr,
+            'suffix': name_suffix,
+            'oam_onap_net': 'oam_network_2No2',
+            'oam_onap_subnet': 'oam_network_2No2',
+            'public_net': 'external',
+            'public_net_id': '971040b2-7059-49dc-b220-4fab50cb2ad4'
+        }
+
+        preload_dict.update(extra_preload)
+        preloader.preload_vfmodule(self.sdnc_endpoint, self.sdnc_preload_vnf_url, self.template_path, vnf_template_file,
+                                   preload_dict)
 
         # create VF Module
         if len(parser.vfmodule_models) == 1:
@@ -398,3 +448,41 @@ class SoUtils:
         self.logger.debug('aai query: ' + url)
         self.logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
         return 'result-data' in response
+
+    @staticmethod
+    def network_name_to_subnet_name(network_name):
+        """
+        :param network_name: example: vcpe_net_cpe_signal_201711281221
+        :return: vcpe_net_cpe_signal_subnet_201711281221
+        """
+        fields = network_name.split('_')
+        fields.insert(-1, 'subnet')
+        return '_'.join(fields)
+
+    def set_network_name(self, network_name):
+        param = ' '.join([k + ' ' + v for k, v in list(self.cloud.items())])
+        openstackcmd = 'openstack ' + param
+        cmd = ' '.join([openstackcmd, 'network set --name', network_name, 'ONAP-NW1'])
+        os.popen(cmd)
+
+    def set_subnet_name(self, network_name):
+        """
+        Example: network_name =  vcpe_net_cpe_signal_201711281221
+        set subnet name to vcpe_net_cpe_signal_subnet_201711281221
+        :return:
+        """
+        param = ' '.join([k + ' ' + v for k, v in list(self.cloud.items())])
+        openstackcmd = 'openstack ' + param
+
+        # expected results: | subnets | subnet_id |
+        subnet_info = os.popen(openstackcmd + ' network show ' + network_name + ' |grep subnets').read().split('|')
+        if len(subnet_info) > 2 and subnet_info[1].strip() == 'subnets':
+            subnet_id = subnet_info[2].strip()
+            subnet_name = self.network_name_to_subnet_name(network_name)
+            cmd = ' '.join([openstackcmd, 'subnet set --name', subnet_name, subnet_id])
+            os.popen(cmd)
+            self.logger.info("Subnet name set to: " + subnet_name)
+            return True
+        else:
+            self.logger.error("Can't get subnet info from network name: " + network_name)
+            return False
