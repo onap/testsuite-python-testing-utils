@@ -42,12 +42,13 @@ class RequestSOKeywords(object):
             logger.info(resp.json()['request']['requestStatus']['requestState'])
             if resp.json()['request']['requestStatus']['requestState'] in complete_states:
                 logger.info("Received response from so " + resp.text)
-                return resp
+                return True, resp
             else:
                 self.builtin.sleep(interval, "Response from SO is not in requested status")
+        return False, None
 
     @keyword
-    def run_create_request(self, endpoint, data_path, data, auth):
+    def run_create_request(self, endpoint, data_path, data, auth=None):
         """Runs an SO create request and returns the request id and instance id."""
         response = self.base_keywords.post_request(endpoint, data_path, data, auth=auth)
         logger.info("Creation request submitted to SO, got response")

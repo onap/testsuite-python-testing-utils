@@ -9,28 +9,21 @@ from datetime import datetime
 import urllib3
 import sys
 from ONAPLibrary.PreloadSDNCKeywords import PreloadSDNCKeywords
+from ONAPLibrary.RequestSOKeywords import RequestSOKeywords
 
 
 class SoUtils:
 
     def __init__(self):
-        self.region_name = None  # set later
-        self.tenant_id = None  # set later
-        self.logger = logger
-
         # SO urls, note: do NOT add a '/' at the end of the url
         self.so_nbi_port = '8080'
         self.so_host = 'so.onap'
         self.so_si_path = '/onap/so/infra/serviceInstantiation/v7/serviceInstances'
         self.so_orch_path = '/onap/so/infra/orchestrationRequests/v6'
-        self.service_req_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port + self.so_si_path
-        self.so_check_progress_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port + self.so_orch_path
+        self.service_req_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port
+        self.so_check_progress_api_url = 'http://' + self.so_host + ':' + self.so_nbi_port + self.so_orch_path + '/'
         self.so_userpass = 'InfraPortalClient', 'password1$'
         self.so_headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-        self.so_db_name = 'catalogdb'
-        self.so_db_user = 'root'
-        self.so_db_pass = 'password'
-        self.so_db_port = '30252'
 
         # aai urls
         self.aai_userpass = 'AAI', 'AAI'
@@ -76,78 +69,12 @@ class SoUtils:
         }
 
         self.template_path = 'robot/assets/templates'
-        self.pub_key = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKXDgoo3+WOqcUG8/5uUbk81+yczgwC4Y8ywTmuQqbNxlY1oQ0YxdMUqUnhitSXs5S/yRuAVOYHwGg2mCs20oAINrP+mxBI544AMIb9itPjCtgqtE2EWo6MmnFGbHB4Sx3XioE7F4VPsh7japsIwzOjbrQe+Mua1TGQ5d4nfEOQaaglXLLPFfuc7WbhbJbK6Q7rHqZfRcOwAMXgDoBqlyqKeiKwnumddo2RyNT8ljYmvB6buz7KnMinzo7qB0uktVT05FH9Rg0CTWH5norlG5qXgP2aukL0gk1ph8iAt7uYLf1ktp+LJI2gaF6L0/qli9EmVCSLr1uJ38Q8CBflhkh'
         self.owning_entity_name = 'OE-Demonstration1'
         self.project_name = 'Project-Demonstration'
         self.owning_entity_id = '520cc603-a3c4-4ec2-9ef4-ca70facd79c0'
         self.global_subscriber_id = 'Demonstration'
         self.vgw_VfModuleModelInvariantUuid = '26d6a718-17b2-4ba8-8691-c44343b2ecd2'
-
-    def submit_create_req(self, req_json, req_type, service_instance_id=None, vnf_instance_id=None):
-        """
-        POST	{serverRoot}/serviceInstances/v4
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/vnfs
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/networks
-        POST	{serverRoot}/serviceInstances/v4/{serviceInstanceId}/vnfs/{vnfInstanceId}/vfModules
-        :param req_json:
-        :param service_instance_id:  this is required only for networks, vnfs, and vf modules
-        :param req_type:
-        :param vnf_instance_id:
-        :return: req_id, instance_id
-        """
-        if req_type == 'service':
-            url = self.service_req_api_url
-        elif req_type == 'vnf':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'vnfs'])
-        elif req_type == 'network':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'networks'])
-        elif req_type == 'vfmodule':
-            url = '/'.join([self.service_req_api_url, service_instance_id, 'vnfs', vnf_instance_id, 'vfModules'])
-        else:
-            self.logger.error('Invalid request type: {0}. Can only be service/vnf/network/vfmodule'.format(req_type))
-            return None, None
-
-        self.logger.info(url)
-        r = requests.post(url, headers=self.so_headers, auth=self.so_userpass, json=req_json)
-        self.logger.debug(r)
-        response = r.json()
-
-        self.logger.debug('---------------------------------------------------------------')
-        self.logger.debug('------- Creation request submitted to SO, got response --------')
-        self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-        self.logger.debug('---------------------------------------------------------------')
-        req_id = response.get('requestReferences', {}).get('requestId', '')
-        instance_id = response.get('requestReferences', {}).get('instanceId', '')
-
-        return req_id, instance_id
-
-    def check_progress(self, req_id, interval=5):
-        if not req_id:
-            self.logger.error('Error when checking SO request progress, invalid request ID: ' + req_id)
-            return False
-        duration = 0.0
-        url = self.so_check_progress_api_url + '/' + req_id
-
-        while True:
-            time.sleep(interval)
-            r = requests.get(url, headers=self.so_headers, auth=self.so_userpass)
-            response = r.json()
-
-            duration += interval
-
-            if response['request']['requestStatus']['requestState'] == 'IN_PROGRESS':
-                self.logger.debug('------------------Request Status-------------------------------')
-                self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-            else:
-                self.logger.debug('---------------------------------------------------------------')
-                self.logger.debug('----------------- Creation Request Results --------------------')
-                self.logger.debug(json.dumps(response, indent=4, sort_keys=True))
-                self.logger.debug('---------------------------------------------------------------')
-                flag = response['request']['requestStatus']['requestState'] == 'COMPLETE'
-                if not flag:
-                    self.logger.error('Request failed.')
-                    self.logger.error(json.dumps(response, indent=4, sort_keys=True))
-                return flag
+        self.so = RequestSOKeywords()
 
     @staticmethod
     def add_req_info(req_details, instance_name, product_family_id=None):
@@ -168,11 +95,12 @@ class SoUtils:
         else:
             req_details['relatedInstanceList'].append({"relatedInstance": instance})
 
-    def generate_vnf_or_network_request(self, instance_name, vnf_or_network_model, service_instance_id, service_model):
+    def generate_vnf_or_network_request(self, instance_name, vnf_or_network_model, service_instance_id, service_model,
+                                        tenant_id, region_name):
         req_details = {
             'modelInfo':  vnf_or_network_model,
-            'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
-                                   "tenantId": self.tenant_id},
+            'cloudConfiguration': {"lcpCloudRegionId": region_name,
+                                   "tenantId": tenant_id},
             'requestParameters':  {"userParams": []},
             'platform': {"platformName": "Platform-Demonstration"}
         }
@@ -181,11 +109,11 @@ class SoUtils:
         return {'requestDetails': req_details}
 
     def generate_vfmodule_request(self, instance_name, vfmodule_model, service_instance_id,
-                                  service_model, vnf_instance_id, vnf_model):
+                                  service_model, vnf_instance_id, vnf_model, tenant_id, region_name):
         req_details = {
             'modelInfo':  vfmodule_model,
-            'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
-                                   "tenantId": self.tenant_id},
+            'cloudConfiguration': {"lcpCloudRegionId": region_name,
+                                   "tenantId": tenant_id},
             'requestParameters': {"usePreload": 'true'}
         }
         self.add_req_info(req_details, instance_name, self.product_family_id)
@@ -215,14 +143,14 @@ class SoUtils:
         req_details['owningEntity'] = {'owningEntityId': self.owning_entity_id,
                                        'owningEntityName': self.owning_entity_name}
 
-    def generate_custom_service_request(self, instance_name, model, brg_mac):
+    def generate_custom_service_request(self, instance_name, model, brg_mac, tenant_id, region_name):
         brg_mac_enc = brg_mac.replace(':', '-')
         req_details = {
             'modelInfo':  model,
             'subscriberInfo':  {'subscriberName': 'Kaneohe',
                                 'globalSubscriberId': self.global_subscriber_id},
-            'cloudConfiguration': {"lcpCloudRegionId": self.region_name,
-                                   "tenantId": self.tenant_id},
+            'cloudConfiguration': {"lcpCloudRegionId": region_name,
+                                   "tenantId": tenant_id},
             'requestParameters': {
                 "userParams": [
                     {
@@ -256,7 +184,7 @@ class SoUtils:
         self.add_owning_entity(req_details)
         return {'requestDetails': req_details}
 
-    def create_custom_service(self, csar_file, brg_mac, name_suffix=None):
+    def create_custom_service(self, csar_file, brg_mac, tenant_id, region_name, name_suffix=None):
         parser = CsarParser()
         if not parser.parse_csar(csar_file):
             return False
@@ -269,26 +197,17 @@ class SoUtils:
         instance_name = '_'.join([self.instance_name_prefix['service'],
                                   parser.svc_model['modelName'][0:10], name_suffix])
         instance_name = instance_name.lower()
-        req = self.generate_custom_service_request(instance_name, parser.svc_model, brg_mac)
-        self.logger.info(json.dumps(req, indent=2, sort_keys=True))
-        self.logger.info('Creating custom service {0}.'.format(instance_name))
-        req_id, svc_instance_id = self.submit_create_req(req, 'service')
-        if not self.check_progress(req_id):
-            return False
-        return True
+        req = self.generate_custom_service_request(instance_name, parser.svc_model, brg_mac, tenant_id, region_name)
+        logger.info(json.dumps(req, indent=2, sort_keys=True))
+        logger.info('Creating custom service {0}.'.format(instance_name))
+        req_id, svc_instance_id = self.so.run_create_request(self.service_req_api_url, self.so_si_path,
+                                                             json.dumps(req), auth=self.so_userpass)
+        done, resp = self.so.run_polling_get_request(self.so_check_progress_api_url, req_id, tries=50, interval=5,
+                                                     auth=self.so_userpass)
+        return done
 
-    def wait_for_aai(self, node_type, uuid):
-        self.logger.info('Waiting for AAI traversal to complete...')
-        for i in range(30):
-            time.sleep(1)
-            if self.is_node_in_aai(node_type, uuid):
-                return
-
-        self.logger.error("AAI traversal didn't finish in 30 seconds. Something is wrong. Type {0}, UUID {1}".format(
-            node_type, uuid))
-        sys.exit()
-
-    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, name_suffix, region_name, tenant_id):
+    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, name_suffix, region_name, tenant_id,
+                              ssh_key):
         """
         :param csar_file:
         :param vnf_template_file:
@@ -296,16 +215,15 @@ class SoUtils:
         :param name_suffix:
         :param region_name:
         :param tenant_id
+        :param ssh_key
         :return:  service instance UUID
         """
-        self.region_name = region_name
-        self.tenant_id = tenant_id
-        self.logger.info('\n----------------------------------------------------------------------------------')
-        self.logger.info('Start to create entire service defined in csar: {0}'.format(csar_file))
+        logger.info('\n----------------------------------------------------------------------------------')
+        logger.info('Start to create entire service defined in csar: {0}'.format(csar_file))
         parser = CsarParser()
-        self.logger.info('Parsing csar ...')
+        logger.info('Parsing csar ...')
         if not parser.parse_csar(csar_file):
-            self.logger.error('Cannot parse csar: {0}'.format(csar_file))
+            logger.error('Cannot parse csar: {0}'.format(csar_file))
             return None
 
         # Set Global timestamp for instancenames
@@ -316,11 +234,14 @@ class SoUtils:
         instance_name = instance_name.lower()
         instance_name = instance_name.replace(' ', '')
         instance_name = instance_name.replace(':', '')
-        self.logger.info('Creating service instance: {0}.'.format(instance_name))
+        logger.info('Creating service instance: {0}.'.format(instance_name))
         req = self.generate_service_request(instance_name, parser.svc_model)
-        self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-        req_id, svc_instance_id = self.submit_create_req(req, 'service')
-        if not self.check_progress(req_id, interval=5):
+        logger.debug(json.dumps(req, indent=2, sort_keys=True))
+        req_id, svc_instance_id = self.so.run_create_request(self.service_req_api_url, self.so_si_path,
+                                                             json.dumps(req), auth=self.so_userpass)
+        done, resp = self.so.run_polling_get_request(self.so_check_progress_api_url, req_id, tries=50, interval=5,
+                                                     auth=self.so_userpass)
+        if not done:
             return None
 
         # wait for AAI to complete traversal
@@ -331,14 +252,21 @@ class SoUtils:
             base_name = model['modelCustomizationName'].lower().replace('mux_vg', 'mux_gw')
             network_name = '_'.join([self.instance_name_prefix['network'], base_name, name_suffix])
             network_name = network_name.lower()
-            self.logger.info('Creating network: ' + network_name)
-            req = self.generate_vnf_or_network_request(network_name, model, svc_instance_id, parser.svc_model)
-            self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, net_instance_id = self.submit_create_req(req, 'network', svc_instance_id)
-            if not self.check_progress(req_id):
+            logger.info('Creating network: ' + network_name)
+            req = self.generate_vnf_or_network_request(network_name, model, svc_instance_id, parser.svc_model,
+                                                       tenant_id, region_name)
+            logger.debug(json.dumps(req, indent=2, sort_keys=True))
+
+            url = '/'.join([self.so_si_path, svc_instance_id, 'networks'])
+            req_id, net_instance_id = self.so.run_create_request(self.service_req_api_url, url, json.dumps(req),
+                                                                 auth=self.so_userpass)
+
+            done, resp = self.so.run_polling_get_request(self.so_check_progress_api_url, req_id, tries=50, interval=5,
+                                                         auth=self.so_userpass)
+            if not done:
                 return None
 
-            self.logger.info('Changing subnet name to ' + self.network_name_to_subnet_name(network_name))
+            logger.info('Changing subnet name to ' + self.network_name_to_subnet_name(network_name))
             self.set_network_name(network_name)
             subnet_name_changed = False
             for i in range(20):
@@ -348,7 +276,7 @@ class SoUtils:
                     break
 
             if not subnet_name_changed:
-                self.logger.error('Failed to change subnet name for ' + network_name)
+                logger.error('Failed to change subnet name for ' + network_name)
                 return None
 
         vnf_model = None
@@ -361,17 +289,23 @@ class SoUtils:
             vnf_instance_name = vnf_instance_name.lower()
             vnf_instance_name = vnf_instance_name.replace(' ', '')
             vnf_instance_name = vnf_instance_name.replace(':', '')
-            self.logger.info('Creating VNF: ' + vnf_instance_name)
-            req = self.generate_vnf_or_network_request(vnf_instance_name, vnf_model, svc_instance_id, parser.svc_model)
-            self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, vnf_instance_id = self.submit_create_req(req, 'vnf', svc_instance_id)
-            if not self.check_progress(req_id, interval=5):
-                self.logger.error('Failed to create VNF {0}.'.format(vnf_instance_name))
+            logger.info('Creating VNF: ' + vnf_instance_name)
+            req = self.generate_vnf_or_network_request(vnf_instance_name, vnf_model, svc_instance_id, parser.svc_model,
+                                                       tenant_id, region_name)
+            logger.debug(json.dumps(req, indent=2, sort_keys=True))
+
+            url = '/'.join([self.so_si_path, svc_instance_id, 'vnfs'])
+            req_id, vnf_instance_id = self.so.run_create_request(self.service_req_api_url, url, json.dumps(req),
+                                                                 auth=self.so_userpass)
+            done, resp = self.so.run_polling_get_request(self.so_check_progress_api_url, req_id, tries=50, interval=5,
+                                                         auth=self.so_userpass)
+            if not done:
+                logger.error('Failed to create VNF {0}.'.format(vnf_instance_name))
                 return False
 
             # wait for AAI to complete traversal
             if not vnf_instance_id:
-                self.logger.error('No VNF instance ID returned!')
+                logger.error('No VNF instance ID returned!')
                 sys.exit()
             self.wait_for_aai('vnf', vnf_instance_id)
 
@@ -382,7 +316,7 @@ class SoUtils:
                                   name_suffix])
 
         extra_preload = {
-            'pub_key': self.pub_key,
+            'pub_key': ssh_key,
             'vnf_type': parser.vfmodule_models[0]['modelCustomizationName'],
             'generic_vnf_type': parser.vfmodule_models[0]['modelCustomizationName'],
             'service_type': svc_instance_id,
@@ -405,7 +339,7 @@ class SoUtils:
         # create VF Module
         if len(parser.vfmodule_models) == 1:
             if not vnf_instance_id or not vnf_model:
-                self.logger.error('Invalid VNF instance ID or VNF model!')
+                logger.error('Invalid VNF instance ID or VNF model!')
                 sys.exit()
 
             model = parser.vfmodule_models[0]
@@ -414,16 +348,33 @@ class SoUtils:
             vfmodule_instance_name = vfmodule_instance_name.lower()
             vfmodule_instance_name = vfmodule_instance_name.replace(' ', '')
             vfmodule_instance_name = vfmodule_instance_name.replace(':', '')
-            self.logger.info('Creating VF Module: ' + vfmodule_instance_name)
+            logger.info('Creating VF Module: ' + vfmodule_instance_name)
             req = self.generate_vfmodule_request(vfmodule_instance_name, model, svc_instance_id, parser.svc_model,
-                                                 vnf_instance_id, vnf_model)
-            self.logger.debug(json.dumps(req, indent=2, sort_keys=True))
-            req_id, vfmodule_instance_id = self.submit_create_req(req, 'vfmodule', svc_instance_id, vnf_instance_id)
-            if not self.check_progress(req_id, interval=50):
-                self.logger.error('Failed to create VF Module {0}.'.format(vfmodule_instance_name))
+                                                 vnf_instance_id, vnf_model, tenant_id, region_name)
+            logger.debug(json.dumps(req, indent=2, sort_keys=True))
+
+            url = '/'.join([self.so_si_path, svc_instance_id, 'vnfs', vnf_instance_id, 'vfModules'])
+            req_id, vfmodule_instance_id = self.so.run_create_request(self.service_req_api_url, url, json.dumps(req),
+                                                                      auth=self.so_userpass)
+
+            done, resp = self.so.run_polling_get_request(self.so_check_progress_api_url, req_id, tries=50, interval=50,
+                                                         auth=self.so_userpass)
+            if not done:
+                logger.error('Failed to create VF Module {0}.'.format(vfmodule_instance_name))
                 return None
 
         return svc_instance_id
+
+    def wait_for_aai(self, node_type, uuid):
+        logger.info('Waiting for AAI traversal to complete...')
+        for i in range(30):
+            time.sleep(1)
+            if self.is_node_in_aai(node_type, uuid):
+                return
+
+        logger.error("AAI traversal didn't finish in 30 seconds. Something is wrong. Type {0}, UUID {1}".format(
+            node_type, uuid))
+        sys.exit()
 
     def is_node_in_aai(self, node_type, node_uuid):
         key = None
@@ -445,8 +396,8 @@ class SoUtils:
         urllib3.disable_warnings()
         r = requests.get(url, headers=headers, auth=self.aai_userpass, verify=False)
         response = r.json()
-        self.logger.debug('aai query: ' + url)
-        self.logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
+        logger.debug('aai query: ' + url)
+        logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
         return 'result-data' in response
 
     @staticmethod
@@ -481,8 +432,8 @@ class SoUtils:
             subnet_name = self.network_name_to_subnet_name(network_name)
             cmd = ' '.join([openstackcmd, 'subnet set --name', subnet_name, subnet_id])
             os.popen(cmd)
-            self.logger.info("Subnet name set to: " + subnet_name)
+            logger.info("Subnet name set to: " + subnet_name)
             return True
         else:
-            self.logger.error("Can't get subnet info from network name: " + network_name)
+            logger.error("Can't get subnet info from network name: " + network_name)
             return False
