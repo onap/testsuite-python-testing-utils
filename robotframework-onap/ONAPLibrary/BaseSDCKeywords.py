@@ -83,7 +83,8 @@ class BaseSDCKeywords(object):
         """Runs an SDC post request"""
         logger.info("Creating session" + endpoint)
         md5 = hashlib.md5()
-        md5checksum = Base64Keywords().base64_encode(md5.update(data).hexdigest())
+        md5.update(data)
+        md5checksum = Base64Keywords().base64_encode(md5.hexdigest())
         RequestsLibrary().create_session("sdc", endpoint, auth=auth)
         headers = self.create_headers(user, accept=accept, content_type=content_type, md5=md5checksum)
         resp = RequestsLibrary().post_request("sdc", data_path, files=files, data=data, headers=headers)
