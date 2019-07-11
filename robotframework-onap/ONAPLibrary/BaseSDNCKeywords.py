@@ -31,51 +31,16 @@ class BaseSDNCKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an SDNC get request"""
-        resp = self.get_request(endpoint, data_path, accept, auth)
+        resp = self.reqs.get_request("sdnc", endpoint, data_path, accept, auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SDNC post request"""
-        return self.post_request(endpoint, data_path, data, accept, auth)
+        return self.reqs.post_request("sdnc", endpoint, data_path, data, accept, auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SDNC post request"""
-        return self.put_request(endpoint, data_path, data, accept, auth)
-
-    def get_request(self, endpoint, data_path, accept="application/json", auth=None):
-        """Runs an SDNC get request"""
-        logger.info("Creating session" + endpoint)
-        RequestsLibrary().create_session("sdnc", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("sdnc", data_path, headers=self.reqs.create_headers(accept))
-        logger.info("Received response from sdnc " + resp.text)
-        return resp
-
-    def post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
-        """Runs an sdnc post request"""
-        logger.info("Creating session" + endpoint)
-        RequestsLibrary().create_session("sdnc", endpoint, auth=auth)
-        headers = self.reqs.create_headers(accept=accept)
-        resp = RequestsLibrary().post_request("sdnc", data_path, data=data, headers=headers)
-        logger.info("Received response from sdnc " + resp.text)
-        return resp
-
-    def put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
-        """Runs an sdnc post request"""
-        logger.info("Creating session" + endpoint)
-        RequestsLibrary().create_session("sdnc", endpoint, auth=auth)
-        headers = self.reqs.create_headers(accept=accept)
-        resp = RequestsLibrary().put_request("sdnc", data_path, data=data, headers=headers)
-        logger.info("Received response from sdnc " + resp.text)
-        return resp
-
-    def delete_request(self, endpoint, data_path, data, accept="application/json", auth=None):
-        """Runs an sdnc post request"""
-        logger.info("Creating session" + endpoint)
-        RequestsLibrary().create_session("sdnc", endpoint, auth=auth)
-        headers = self.reqs.create_headers(accept=accept)
-        resp = RequestsLibrary().delete_request("sdnc", data_path, data=data, headers=headers)
-        logger.info("Received response from sdnc " + resp.text)
-        return resp
+        return self.reqs.put_request("sdnc", endpoint, data_path, data, accept, auth)

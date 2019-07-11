@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from ONAPLibrary.BaseSDNCKeywords import BaseSDNCKeywords
-from ONAPLibrary.UUIDKeywords import UUIDKeywords
+
+from ONAPLibrary.RequestsHelper import RequestsHelper
 from ONAPLibrary.TemplatingKeywords import TemplatingKeywords
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
-from robot.libraries.OperatingSystem import OperatingSystem
 
 
 class PreloadSDNCKeywords(object):
@@ -25,11 +23,7 @@ class PreloadSDNCKeywords(object):
 
     def __init__(self):
         super(PreloadSDNCKeywords, self).__init__()
-        self.application_id = "robot-ete"
-        self.builtin = BuiltIn()
-        self.base_keywords = BaseSDNCKeywords()
-        self.utilities = UUIDKeywords()
-        self.os = OperatingSystem()
+        self.reqs = RequestsHelper()
         self.templating = TemplatingKeywords()
 
     @keyword
@@ -37,4 +31,4 @@ class PreloadSDNCKeywords(object):
         """Runs an SDNC request to preload certain data."""
         self.templating.create_environment("sdnc", templates_folder)
         data = self.templating.apply_template("sdnc", template, preload_dictionary)
-        return self.base_keywords.post_request(endpoint, data_path, data)
+        return self.reqs.post_request("sdnc", endpoint, data_path, data)

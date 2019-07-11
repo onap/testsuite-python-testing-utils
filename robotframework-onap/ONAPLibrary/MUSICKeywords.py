@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from RequestsLibrary import RequestsLibrary
-from robot.api import logger
+
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
@@ -31,15 +30,7 @@ class MUSICKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an MUSIC get request"""
-        resp = self.get_request(endpoint, data_path, accept, auth)
-        return resp
-
-    def get_request(self, endpoint, data_path, accept="application/json", auth=None):
-        """Runs an MUSIC get request"""
-        logger.info("Creating session" + endpoint)
-        RequestsLibrary().create_session("music", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("music", data_path, headers=self.reqs.create_headers(accept=accept))
-        logger.info("Received response from music " + resp.text)
+        resp = self.reqs.get_request("music", endpoint, data_path, accept, auth)
         return resp
 
     def run_health_check(self, endpoint, health_check_path):

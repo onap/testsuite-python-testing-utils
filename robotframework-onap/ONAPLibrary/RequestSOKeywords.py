@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from ONAPLibrary.BaseSOKeywords import BaseSOKeywords
+
+from ONAPLibrary.RequestsHelper import RequestsHelper
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
@@ -25,7 +26,7 @@ class RequestSOKeywords(object):
         super(RequestSOKeywords, self).__init__()
         self.application_id = "robot-ete"
         self.builtin = BuiltIn()
-        self.base_keywords = BaseSOKeywords()
+        self.reqs = RequestsHelper()
 
     @keyword
     def run_polling_get_request(self, endpoint, data_path, complete_states=None, fail_states=None, tries=20,
@@ -37,7 +38,7 @@ class RequestSOKeywords(object):
             complete_states = ["COMPLETE"]
         # do this until it is done
         for i in range(tries):
-            resp = self.base_keywords.get_request(endpoint, data_path, auth=auth)
+            resp = self.reqs.get_request("so", endpoint, data_path, auth=auth)
             self.builtin.should_not_contain_any(resp.text, fail_states)
             logger.info(resp.json()['request']['requestStatus']['requestState'])
             if resp.json()['request']['requestStatus']['requestState'] in complete_states:
@@ -50,7 +51,7 @@ class RequestSOKeywords(object):
     @keyword
     def run_create_request(self, endpoint, data_path, data, auth=None):
         """Runs an SO create request and returns the request id and instance id."""
-        response = self.base_keywords.post_request(endpoint, data_path, data, auth=auth)
+        response = self.reqs.post_request("so", endpoint, data_path, data, auth=auth)
         logger.info("Creation request submitted to SO, got response")
 
         req_id = response.get('requestReferences', {}).get('requestId', '')
