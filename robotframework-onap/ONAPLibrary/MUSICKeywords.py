@@ -16,7 +16,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
-from ONAPLibrary.Utilities import Utilities
+from ONAPLibrary.RequestsHelper import RequestsHelper
 
 
 class MUSICKeywords(object):
@@ -25,8 +25,7 @@ class MUSICKeywords(object):
 
     def __init__(self):
         super(MUSICKeywords, self).__init__()
-        self.application_id = "robot-ete"
-        self.uuid = Utilities()
+        self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
 
     @keyword
@@ -39,20 +38,9 @@ class MUSICKeywords(object):
         """Runs an MUSIC get request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("music", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("music", data_path, headers=self.create_headers(accept))
+        resp = RequestsLibrary().get_request("music", data_path, headers=self.reqs.create_headers(accept=accept))
         logger.info("Received response from music " + resp.text)
         return resp
-
-    def create_headers(self, accept="application/json"):
-        """Create the headers that are used by MUSIC"""
-        uuid = self.uuid.generate_uuid4()
-        headers = {
-            "Accept": accept,
-            "Content-Type": "application/json",
-            "X-TransactionId": self.application_id + "-" + uuid,
-            "X-FromAppId": self.application_id
-        }
-        return headers
 
     def run_health_check(self, endpoint, health_check_path):
         """Runs MUSIC Health check"""
@@ -65,4 +53,3 @@ class MUSICKeywords(object):
         resp = self.run_get_request(endpoint, health_check_path)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         self.builtin.should_be_equal_as_strings(resp.json()['Cassandra'], "Active")
-

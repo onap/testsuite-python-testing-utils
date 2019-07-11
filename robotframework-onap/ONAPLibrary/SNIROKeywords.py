@@ -16,7 +16,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
-from ONAPLibrary.Utilities import Utilities
+from ONAPLibrary.RequestsHelper import RequestsHelper
 from ONAPLibrary.TemplatingKeywords import TemplatingKeywords
 from ONAPLibrary.Base64Keywords import Base64Keywords
 
@@ -27,8 +27,7 @@ class SNIROKeywords(object):
 
     def __init__(self):
         super(SNIROKeywords, self).__init__()
-        self.application_id = "robot-ete"
-        self.uuid = Utilities()
+        self.reqs = RequestsHelper()
         self.templating = TemplatingKeywords()
         self.base64 = Base64Keywords()
         self.builtin = BuiltIn()
@@ -69,7 +68,8 @@ class SNIROKeywords(object):
         """Runs an SNIRO post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("so", endpoint, auth=auth)
-        resp = RequestsLibrary().post_request("so", data_path, data=data, headers=self.create_headers(accept))
+        headers = self.reqs.create_headers(accept=accept)
+        resp = RequestsLibrary().post_request("so", data_path, data=data, headers=headers)
         logger.info("Received response from so " + resp.text)
         return resp
 
@@ -77,17 +77,6 @@ class SNIROKeywords(object):
         """Runs an SNIRO get request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("sniro", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("sniro", data_path, headers=self.create_headers(accept))
+        resp = RequestsLibrary().get_request("sniro", data_path, headers=self.reqs.create_headers(accept=accept))
         logger.info("Received response from OOF-SNIRO " + resp.text)
         return resp
-
-    def create_headers(self, accept="application/json"):
-        """Create the headers that are used by so"""
-        uuid = self.uuid.generate_uuid4()
-        headers = {
-            "Accept": accept,
-            "Content-Type": "application/json",
-            "X-TransactionId": self.application_id + "-" + uuid,
-            "X-FromAppId": self.application_id
-        }
-        return headers

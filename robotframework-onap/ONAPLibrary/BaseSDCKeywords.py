@@ -19,7 +19,7 @@ from robot.libraries.BuiltIn import BuiltIn
 import hashlib
 
 from ONAPLibrary.Base64Keywords import Base64Keywords
-from ONAPLibrary.UUIDKeywords import UUIDKeywords
+from ONAPLibrary.RequestsHelper import RequestsHelper
 
 
 class BaseSDCKeywords(object):
@@ -28,8 +28,7 @@ class BaseSDCKeywords(object):
 
     def __init__(self):
         super(BaseSDCKeywords, self).__init__()
-        self.application_id = "robot-ete"
-        self.uuid = UUIDKeywords()
+        self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
 
     @keyword
@@ -59,24 +58,10 @@ class BaseSDCKeywords(object):
         """Runs an SDC get request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("sdc", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("sdc", data_path, headers=self.create_headers(user, accept))
+        headers = self.reqs.create_headers(sdc_user_id=user, accept=accept)
+        resp = RequestsLibrary().get_request("sdc", data_path, headers=headers)
         logger.info("Received response from sdc " + resp.text)
         return resp
-
-    def create_headers(self, user=None, accept="application/json", content_type="application/json", md5=None):
-        """Create the headers that are used by sdc"""
-        uuid = self.uuid.generate_uuid4()
-        headers = {
-            "Accept": accept,
-            "Content-Type": content_type,
-            "X-TransactionId": self.application_id + "-" + uuid,
-            "X-FromAppId": self.application_id
-        }
-        if not user:
-            headers["USER_ID"] = user
-        if not md5:
-            headers["Content-MD5"] = md5
-        return headers
 
     def post_request(self, endpoint, data_path, data, user, files=None, accept="application/json",
                      content_type="application/json", auth=None):
@@ -86,7 +71,7 @@ class BaseSDCKeywords(object):
         md5.update(data)
         md5checksum = Base64Keywords().base64_encode(md5.hexdigest())
         RequestsLibrary().create_session("sdc", endpoint, auth=auth)
-        headers = self.create_headers(user, accept=accept, content_type=content_type, md5=md5checksum)
+        headers = self.reqs.create_headers(user, accept=accept, content_type=content_type, md5=md5checksum)
         resp = RequestsLibrary().post_request("sdc", data_path, files=files, data=data, headers=headers)
 
         logger.info("Received response from sdc " + resp.text)
@@ -96,7 +81,8 @@ class BaseSDCKeywords(object):
         """Runs an SDC post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("sdc", endpoint, auth=auth)
-        resp = RequestsLibrary().put_request("sdc", data_path, data=data, headers=self.create_headers(user, accept))
+        headers = self.reqs.create_headers(sdc_user_id=user, accept=accept)
+        resp = RequestsLibrary().put_request("sdc", data_path, data=data, headers=headers)
         logger.info("Received response from sdc " + resp.text)
         return resp
 
@@ -104,6 +90,7 @@ class BaseSDCKeywords(object):
         """Runs an SDC post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("sdc", endpoint, auth=auth)
-        resp = RequestsLibrary().delete_request("sdc", data_path, data=data, headers=self.create_headers(user, accept))
+        headers = self.reqs.create_headers(sdc_user_id=user, accept=accept)
+        resp = RequestsLibrary().delete_request("sdc", data_path, data=data, headers=headers)
         logger.info("Received response from sdc " + resp.text)
         return resp

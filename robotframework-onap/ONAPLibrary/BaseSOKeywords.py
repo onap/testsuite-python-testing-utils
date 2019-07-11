@@ -16,7 +16,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
-from ONAPLibrary.Utilities import Utilities
+from ONAPLibrary.RequestsHelper import RequestsHelper
 
 
 class BaseSOKeywords(object):
@@ -25,8 +25,7 @@ class BaseSOKeywords(object):
 
     def __init__(self):
         super(BaseSOKeywords, self).__init__()
-        self.application_id = "robot-ete"
-        self.uuid = Utilities()
+        self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
 
     @keyword
@@ -50,26 +49,17 @@ class BaseSOKeywords(object):
         """Runs an SO get request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("so", endpoint, auth=auth)
-        resp = RequestsLibrary().get_request("so", data_path, headers=self.create_headers(accept))
+        headers = self.reqs.create_headers(accept=accept)
+        resp = RequestsLibrary().get_request("so", data_path, headers=headers)
         logger.info("Received response from so " + resp.text)
         return resp
-
-    def create_headers(self, accept="application/json"):
-        """Create the headers that are used by so"""
-        uuid = self.uuid.generate_uuid4()
-        headers = {
-            "Accept": accept,
-            "Content-Type": "application/json",
-            "X-TransactionId": self.application_id + "-" + uuid,
-            "X-FromAppId": self.application_id
-        }
-        return headers
 
     def post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SO post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("so", endpoint, auth=auth)
-        resp = RequestsLibrary().post_request("so", data_path, data=data, headers=self.create_headers(accept))
+        headers = self.reqs.create_headers(accept=accept)
+        resp = RequestsLibrary().post_request("so", data_path, data=data, headers=headers)
         logger.info("Received response from so " + resp.text)
         return resp
 
@@ -77,7 +67,8 @@ class BaseSOKeywords(object):
         """Runs an SO post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("so", endpoint, auth=auth)
-        resp = RequestsLibrary().put_request("so", data_path, data=data, headers=self.create_headers(accept))
+        headers = self.reqs.create_headers(accept=accept)
+        resp = RequestsLibrary().put_request("so", data_path, data=data, headers=headers)
         logger.info("Received response from so " + resp.text)
         return resp
 
@@ -85,6 +76,7 @@ class BaseSOKeywords(object):
         """Runs an SO post request"""
         logger.info("Creating session" + endpoint)
         RequestsLibrary().create_session("so", endpoint, auth=auth)
-        resp = RequestsLibrary().delete_request("so", data_path, data=data, headers=self.create_headers(accept))
+        headers = self.reqs.create_headers(accept=accept)
+        resp = RequestsLibrary().delete_request("so", data_path, data=data, headers=headers)
         logger.info("Received response from so " + resp.text)
         return resp
