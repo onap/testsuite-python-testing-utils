@@ -27,19 +27,20 @@ setup(
     url="https://github.com/onap/testsuite-python-testing-utils",
     platforms=['all'],
     install_requires=[
-        'dnspython',
-        'paramiko',
-        'pyyaml',
-        'robotframework',
         'deepdiff',
-        'Jinja2',
-        'six',
-        'requests',
+        'dnspython',
         'future',
-        'robotframework-requests',
+        'jinja2',
+        'jsonpath-rw',
         'kafka-python',
-        'urllib3',
-        'jsonpath-rw'
+        'paramiko',
+        'protobuf',
+        'pyyaml',
+        'requests',
+        'robotframework',
+        'robotframework-requests',
+        'six',
+        'urllib3'
     ],  # what we need
     packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
