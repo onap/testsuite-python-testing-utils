@@ -56,9 +56,12 @@ class RequestsHelper(object):
                      content_type="application/json", auth=None):
         """Runs a post request"""
         logger.info("Creating session" + endpoint)
-        md5 = hashlib.md5()
-        md5.update(data)
-        md5checksum = Base64Keywords().base64_encode(md5.hexdigest())
+        if not data:
+            md5 = hashlib.md5()
+            md5.update(data)
+            md5checksum = Base64Keywords().base64_encode(md5.hexdigest())
+        else:
+            md5checksum = None
         self.requests.create_session(alias,  endpoint, auth=auth)
         headers = self.create_headers(sdc_user_id=sdc_user, accept=accept, content_type=content_type, md5=md5checksum)
         resp = self.requests.post_request(alias,  data_path, files=files, data=data, headers=headers)
