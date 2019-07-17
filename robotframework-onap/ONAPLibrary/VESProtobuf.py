@@ -27,6 +27,7 @@ class VESProtobuf(object):
 
     def __init__(self):
         super(VESProtobuf, self).__init__()
+        self.message_descriptors = VESProtobuf.get_message_definitions()
 
     @staticmethod
     def create_ves_event():
@@ -109,12 +110,12 @@ class VESProtobuf(object):
 
     @staticmethod
     def get_message_definitions():
-        return message_factory.GetMessages((VESProtobuf.create_ves_event(),))
+        messages = message_factory.GetMessages((VESProtobuf.create_ves_event(),))
+        message_factory._FACTORY = message_factory.MessageFactory()
+        return messages
 
-    @staticmethod
-    def binary_to_json(binary_message):
-        defs = VESProtobuf.get_message_definitions()
-        ves = defs['VesEvent']()
+    def binary_to_json(self, binary_message):
+        ves = self.message_descriptors['VesEvent']()
         ves.MergeFromString(binary_message)
         json = MessageToJson(ves)
         return json
