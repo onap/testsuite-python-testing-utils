@@ -41,7 +41,7 @@ setup(
         'robotframework-requests',
         'six',
         'urllib3'
-    ],  # what we need
+    ],  # what we need to run library
     packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
         'loadtest': 'loadtest',

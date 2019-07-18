@@ -13,12 +13,12 @@ class UUIDKeywords(object):
     @keyword
     def generate_uuid4(self):
         """generate a uuid"""
-        return uuid.uuid4()
+        return str(uuid.uuid4())
 
     @keyword
     def generate_uuid1(self):
         """generate a timestamp uuid"""
-        return uuid.uuid1()
+        return str(uuid.uuid1())
 
     @keyword
     def generate_timestamp(self):
