@@ -43,7 +43,7 @@ class BaseSDCKeywords(object):
     @keyword
     def run_post_files_request(self, endpoint, data_path, files, user, accept="application/json", auth=None):
         """Runs an SDC post files request"""
-        return self.reqs.post_request("sdc", endpoint, data_path, files, user, files=None, accept=accept,
+        return self.reqs.post_request("sdc", endpoint, data_path, None, user, files=files, accept=accept,
                                       content_type="multipart/form-data", auth=auth)
 
     @keyword
