@@ -12,17 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ONAPLibrary.robotlibcore import HybridCore
-from ONAPLibrary.ProtobufKeywords import ProtobufKeywords
+from robot.api.deco import keyword
+import os.path
+from unittest import TestCase
+from ONAPLibrary.ServiceMappingKeywords import ServiceMappingKeywords
 
 
-class Protobuf(HybridCore):
-    """ Utilities useful for Protobuf manipulation """
+class ServiceMappingKeywordsTests(TestCase):
 
-    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+    @staticmethod
+    def _get_location():
+        path = os.path.realpath(
+            os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        return path
 
-    def __init__(self):
-        self.keyword_implementors = [
-            ProtobufKeywords()
-        ]
-        HybridCore.__init__(self, self.keyword_implementors)
+    @keyword
+    def test(self):
+        sm = ServiceMappingKeywords()
+        sm.set_directory("default", self._get_location())
+        self.assertEqual(['vFW'], sm.get_service_folder_mapping("default", "vFW"))

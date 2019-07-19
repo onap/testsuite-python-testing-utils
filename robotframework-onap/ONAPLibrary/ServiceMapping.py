@@ -20,6 +20,8 @@ class ServiceMapping(HybridCore):
     """ServiceMapping is an ONAP testing library for Robot Framework that enables the use of a service_mapping.json
     to dynamically add services to a robot test suite with out changing robot code"""
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             ServiceMappingKeywords()

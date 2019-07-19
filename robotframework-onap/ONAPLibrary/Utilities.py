@@ -23,6 +23,8 @@ from ONAPLibrary.Base64Keywords import Base64Keywords
 class Utilities(HybridCore):
     """ Keywords are useful for helper functions requests """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             DNSKeywords(),

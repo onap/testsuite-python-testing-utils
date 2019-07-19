@@ -20,6 +20,8 @@ class SDC(HybridCore):
     """SDC is an ONAP testing library for Robot Framework that provides functionality for interacting with the serivce
     orchestrator. """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             BaseSDCKeywords()

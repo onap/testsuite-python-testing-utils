@@ -21,6 +21,8 @@ class SDNC(HybridCore):
     """SDNC is an ONAP testing library for Robot Framework that provides functionality for interacting with the network
     controller. """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             BaseSDNCKeywords(),

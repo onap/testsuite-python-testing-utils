@@ -20,6 +20,8 @@ class MUSIC(HybridCore):
     """MUSIC is an ONAP testing library for Robot Framework that provides functionality for interacting with the music
     component. """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             MUSICKeywords()

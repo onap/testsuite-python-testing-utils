@@ -19,6 +19,8 @@ from ONAPLibrary.KafkaKeywords import KafkaKeywords
 class Kafka(HybridCore):
     """ Utilities useful for Kafka consuming and producing """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             KafkaKeywords()

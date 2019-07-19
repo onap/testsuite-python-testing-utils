@@ -21,6 +21,8 @@ class JSON(HybridCore):
     """JSON is common resource for simple json helper keywords.
     """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             JSONKeywords(),

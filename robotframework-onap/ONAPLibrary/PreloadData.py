@@ -20,6 +20,8 @@ class PreloadData(HybridCore):
     """PreloadData is an ONAP testing library for Robot Framework that enables the use of a preload_data.json
     to dynamically add preload data to a robot test suite with out changing robot code"""
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             PreloadDataKeywords()

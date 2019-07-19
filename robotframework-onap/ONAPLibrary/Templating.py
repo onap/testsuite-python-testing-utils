@@ -21,6 +21,8 @@ class Templating(HybridCore):
     templating engine
     """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         self.keyword_implementors = [
             TemplatingKeywords()
