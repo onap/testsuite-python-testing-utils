@@ -3,13 +3,13 @@
 import time
 
 from vcpeutils.csar_parser import *
-import requests
 from robot.api import logger
 from datetime import datetime
-import urllib3
 import sys
 from ONAPLibrary.PreloadSDNCKeywords import PreloadSDNCKeywords
 from ONAPLibrary.RequestSOKeywords import RequestSOKeywords
+from ONAPLibrary.BaseAAIKeywords import BaseAAIKeywords
+from ONAPLibrary.UUIDKeywords import UUIDKeywords
 
 
 class SoUtils:
@@ -75,6 +75,8 @@ class SoUtils:
         self.global_subscriber_id = 'Demonstration'
         self.vgw_VfModuleModelInvariantUuid = '26d6a718-17b2-4ba8-8691-c44343b2ecd2'
         self.so = RequestSOKeywords()
+        self.aai = BaseAAIKeywords()
+        self.uuid = UUIDKeywords()
 
     @staticmethod
     def add_req_info(req_details, instance_name, product_family_id=None):
@@ -206,18 +208,19 @@ class SoUtils:
                                                      auth=self.so_userpass)
         return done
 
-    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, name_suffix, region_name, tenant_id,
-                              ssh_key):
+    def create_entire_service(self, csar_file, vnf_template_file, preload_dict, region_name, tenant_id, ssh_key):
         """
         :param csar_file:
         :param vnf_template_file:
         :param preload_dict:
-        :param name_suffix:
         :param region_name:
         :param tenant_id
         :param ssh_key
         :return:  service instance UUID
         """
+
+        name_suffix = str(self.uuid.generate_timestamp())
+
         logger.info('\n----------------------------------------------------------------------------------')
         logger.info('Start to create entire service defined in csar: {0}'.format(csar_file))
         parser = CsarParser()
@@ -245,7 +248,8 @@ class SoUtils:
             return None
 
         # wait for AAI to complete traversal
-        self.wait_for_aai('service', svc_instance_id)
+        endpoint = "https://{0}:{1}".format(self.aai_host, self.aai_query_port)
+        self.aai.wait_for_node_to_exist(endpoint, 'service-instance', 'service-instance-id', svc_instance_id)
 
         # create networks
         for model in parser.net_models:
@@ -307,7 +311,8 @@ class SoUtils:
             if not vnf_instance_id:
                 logger.error('No VNF instance ID returned!')
                 sys.exit()
-            self.wait_for_aai('vnf', vnf_instance_id)
+            endpoint = "https://{0}:{1}".format(self.aai_host, self.aai_query_port)
+            self.aai.wait_for_node_to_exist(endpoint, 'generic-vnf', 'vnf-id', vnf_instance_id)
 
         # SDNC Preload 
         preloader = PreloadSDNCKeywords()
@@ -364,41 +369,6 @@ class SoUtils:
                 return None
 
         return svc_instance_id
-
-    def wait_for_aai(self, node_type, uuid):
-        logger.info('Waiting for AAI traversal to complete...')
-        for i in range(30):
-            time.sleep(1)
-            if self.is_node_in_aai(node_type, uuid):
-                return
-
-        logger.error("AAI traversal didn't finish in 30 seconds. Something is wrong. Type {0}, UUID {1}".format(
-            node_type, uuid))
-        sys.exit()
-
-    def is_node_in_aai(self, node_type, node_uuid):
-        key = None
-        search_node_type = None
-        if node_type == 'service':
-            search_node_type = 'service-instance'
-            key = 'service-instance-id'
-        elif node_type == 'vnf':
-            search_node_type = 'generic-vnf'
-            key = 'vnf-id'
-        else:
-            logging.error('Invalid node_type: ' + node_type)
-            sys.exit()
-
-        url = 'https://{0}:{1}/aai/v11/search/nodes-query?search-node-type={2}&filter={3}:EQUALS:{4}'.format(
-            self.aai_host, self.aai_query_port, search_node_type, key, node_uuid)
-
-        headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'X-FromAppID': 'vCPE-Robot', 'X-TransactionId': 'get_aai_subscr'}
-        urllib3.disable_warnings()
-        r = requests.get(url, headers=headers, auth=self.aai_userpass, verify=False)
-        response = r.json()
-        logger.debug('aai query: ' + url)
-        logger.debug('aai response:\n' + json.dumps(response, indent=4, sort_keys=True))
-        return 'result-data' in response
 
     @staticmethod
     def network_name_to_subnet_name(network_name):
