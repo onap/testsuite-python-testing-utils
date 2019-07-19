@@ -37,9 +37,9 @@ class RequestsHelper(object):
             "X-TransactionId": self.application_id + "-" + uuid,
             "X-FromAppId": self.application_id
         }
-        if not sdc_user_id:
+        if sdc_user_id is not None:
             headers["USER_ID"] = sdc_user_id
-        if not md5:
+        if md5 is not None:
             headers["Content-MD5"] = md5
         return headers
 
@@ -56,7 +56,7 @@ class RequestsHelper(object):
                      content_type="application/json", auth=None):
         """Runs a post request"""
         logger.info("Creating session" + endpoint)
-        if not data:
+        if data is not None:
             md5 = hashlib.md5()
             md5.update(data)
             md5checksum = Base64Keywords().base64_encode(md5.hexdigest())

@@ -11,9 +11,9 @@ class Base64Keywords(object):
     @keyword
     def base64_encode(self, string_to_encode):
         """generate a base64 encoded string"""
-        return base64.b64encode(self, string_to_encode)
+        return base64.b64encode(string_to_encode.encode("utf-8"))
 
     @keyword
     def base64_decode(self, string_to_decode):
         """decode a base64 encoded string"""
-        return base64.b64decode(self, string_to_decode)
+        return base64.b64decode(string_to_decode.encode("utf-8"))
