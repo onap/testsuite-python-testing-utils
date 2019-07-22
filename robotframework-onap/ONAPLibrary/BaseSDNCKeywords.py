@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from RequestsLibrary import RequestsLibrary
-from robot.api import logger
+
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
@@ -31,16 +30,16 @@ class BaseSDNCKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an SDNC get request"""
-        resp = self.reqs.get_request("sdnc", endpoint, data_path, accept, auth)
+        resp = self.reqs.get_request("sdnc", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SDNC post request"""
-        return self.reqs.post_request("sdnc", endpoint, data_path, data, accept, auth)
+        return self.reqs.post_request("sdnc", endpoint, data_path, data, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SDNC post request"""
-        return self.reqs.put_request("sdnc", endpoint, data_path, data, accept, auth)
+        return self.reqs.put_request("sdnc", endpoint, data_path, data, sdc_user=None, accept=accept, auth=auth)

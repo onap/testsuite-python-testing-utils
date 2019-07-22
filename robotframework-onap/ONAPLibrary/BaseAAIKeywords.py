@@ -18,6 +18,7 @@ from robot.libraries.BuiltIn import BuiltIn
 import time
 
 from ONAPLibrary.RequestsHelper import RequestsHelper
+from ONAPLibrary.HTTPKeywords import HTTPKeywords
 
 
 class BaseAAIKeywords(object):
@@ -28,10 +29,12 @@ class BaseAAIKeywords(object):
         super(BaseAAIKeywords, self).__init__()
         self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
+        self.http = HTTPKeywords()
 
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an AAI get request"""
+        self.http.disable_warnings()
         resp = self.reqs.get_request("aai", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
@@ -39,17 +42,20 @@ class BaseAAIKeywords(object):
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
+        self.http.disable_warnings()
         return self.reqs.post_request("aai", endpoint, data_path, data, sdc_user=None, files=None,
                                       accept=accept, auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
+        self.http.disable_warnings()
         return self.reqs.put_request("aai", endpoint, data_path, data, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, resource_version, accept="application/json", auth=None):
         """Runs an AAI delete request"""
+        self.http.disable_warnings()
         return self.reqs.delete_request("aai", endpoint, data_path + '?resource-version=' + resource_version, data=None,
                                         sdc_user=None, accept=accept, auth=auth)
 
@@ -71,6 +77,7 @@ class BaseAAIKeywords(object):
     def find_node(self, endpoint, search_node_type, key, node_uuid, auth=None):
         data_path = '/aai/v11/search/nodes-query?search-node-type={0}&filter={1}:EQUALS:{2}'.format(
             search_node_type, key, node_uuid)
+        self.http.disable_warnings()
         resp = self.reqs.get_request("aai", endpoint, data_path, accept="application/json", auth=auth)
         response = resp.json()
         return 'result-data' in response

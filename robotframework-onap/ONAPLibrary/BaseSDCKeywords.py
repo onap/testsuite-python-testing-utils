@@ -31,7 +31,7 @@ class BaseSDCKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, user, accept="application/json", auth=None):
         """Runs an SDC get request"""
-        resp = self.reqs.get_request("sdc", endpoint, data_path, user, accept, auth)
+        resp = self.reqs.get_request("sdc", endpoint, data_path, sdc_user=user, accept=accept, auth=auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
 
@@ -49,9 +49,9 @@ class BaseSDCKeywords(object):
     @keyword
     def run_put_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
         """Runs an SDC post request"""
-        return self.reqs.put_request("sdc", endpoint, data_path, data, user, accept, auth)
+        return self.reqs.put_request("sdc", endpoint, data_path, data, sdc_user=user, accept=accept, auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
         """Runs an SDC delete request"""
-        return self.reqs.delete_request("sdc", endpoint, data_path, data, user, accept, auth)
+        return self.reqs.delete_request("sdc", endpoint, data_path, data, sdc_user=user, accept=accept, auth=auth)
