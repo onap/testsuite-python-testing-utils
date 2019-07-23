@@ -14,6 +14,7 @@
 
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
+from kafka import TopicPartition
 import ssl
 from robot.api.deco import keyword
 from robot import utils
