@@ -15,6 +15,7 @@
 from ONAPLibrary.RequestSOKeywords import RequestSOKeywords
 from ONAPLibrary.robotlibcore import HybridCore
 from ONAPLibrary.BaseSOKeywords import BaseSOKeywords
+from ONAPLibrary.CloudConfigSOKeywords import CloudConfigSOKeywords
 
 
 class SO(HybridCore):
@@ -26,6 +27,7 @@ class SO(HybridCore):
     def __init__(self):
         self.keyword_implementors = [
             BaseSOKeywords(),
-            RequestSOKeywords()
+            RequestSOKeywords(),
+            CloudConfigSOKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)

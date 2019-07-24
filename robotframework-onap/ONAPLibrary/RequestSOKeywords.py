@@ -24,7 +24,6 @@ class RequestSOKeywords(object):
 
     def __init__(self):
         super(RequestSOKeywords, self).__init__()
-        self.application_id = "robot-ete"
         self.builtin = BuiltIn()
         self.reqs = RequestsHelper()
 
