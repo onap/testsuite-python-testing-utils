@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Gary Wu <gary.wu@gmail.com>
+Submitted-by: Gary Wu <gary.wu@gmail.com>
+Submitted-at: Wed, 24 Jul 2019 21:28:39 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/91968
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
