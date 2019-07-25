@@ -12,13 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# noinspection PyPackageRequirements
 from google.protobuf import descriptor
-# noinspection PyPackageRequirements
 from google.protobuf import descriptor_pb2
-# noinspection PyPackageRequirements
 from google.protobuf import message_factory
-# noinspection PyPackageRequirements
 from google.protobuf.json_format import MessageToJson
 
 
