@@ -35,9 +35,7 @@ class BaseAAIKeywords(object):
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an AAI get request"""
         self.http.disable_warnings()
-        resp = self.reqs.get_request("aai", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
-        self.builtin.should_be_equal_as_strings(resp.status_code, "200")
-        return resp
+        return self.reqs.get_request("aai", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
