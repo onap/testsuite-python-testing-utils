@@ -43,3 +43,8 @@ class BaseSOKeywords(object):
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SO post request"""
         return self.reqs.put_request("so", endpoint, data_path, data, accept=accept, auth=auth)
+
+    @keyword
+    def run_delete_request(self, endpoint, data_path, data, accept="application/json", auth=None):
+        """Runs an SO delete request"""
+        return self.reqs.delete_request("so", endpoint, data_path, data=data, accept=accept, auth=auth)
