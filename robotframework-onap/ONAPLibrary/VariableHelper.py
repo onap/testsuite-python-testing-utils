@@ -12,24 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
 
-class VariableKeywords(object):
-    """ Utilities useful for working with varaibles """
+class VariableHelper(object):
+    """ Non keyword class for useful for working with varaibles """
 
     def __init__(self):
-        super(VariableKeywords, self).__init__()
+        super(VariableHelper, self).__init__()
         self.builtin = BuiltIn()
 
-    @keyword
     def get_globally_injected_parameters(self):
         dictionary = self.builtin.get_variables(no_decoration=True)
-        return self.filter_variables_by_key_prefix(dictionary, "GLOBAL_INJECTED")
+        return self.filter_variables_by_key_prefix(dictionary, "GLOBAL_INJECTED_")
 
-    @keyword
-    def filter_variables_by_key_prefix(self, dictionary, partial):
+    def get_global_parameters(self):
+        dictionary = self.builtin.get_variables(no_decoration=True)
+        global_variables = self.filter_variables_by_key_prefix(dictionary, "GLOBAL_")
+        # strip out global injected (get those above)
+        for key in self.get_globally_injected_parameters():
+            del global_variables[key]
+        return global_variables
+
+    @staticmethod
+    def filter_variables_by_key_prefix(dictionary, partial):
         matches = dict()
         for key, val in dictionary.items():
             if key.startswith(partial):

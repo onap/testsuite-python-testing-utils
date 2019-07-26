@@ -31,9 +31,7 @@ class BaseSDCKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, user, accept="application/json", auth=None):
         """Runs an SDC get request"""
-        resp = self.reqs.get_request("sdc", endpoint, data_path, sdc_user=user, accept=accept, auth=auth)
-        self.builtin.should_be_equal_as_strings(resp.status_code, "200")
-        return resp
+        return self.reqs.get_request("sdc", endpoint, data_path, sdc_user=user, accept=accept, auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
