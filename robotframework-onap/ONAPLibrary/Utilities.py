@@ -18,7 +18,6 @@ from ONAPLibrary.SocketKeywords import SocketKeywords
 from ONAPLibrary.UUIDKeywords import UUIDKeywords
 from ONAPLibrary.HTTPKeywords import HTTPKeywords
 from ONAPLibrary.Base64Keywords import Base64Keywords
-from ONAPLibrary.VariableKeywords import VariableKeywords
 
 
 class Utilities(HybridCore):
@@ -32,7 +31,6 @@ class Utilities(HybridCore):
             SocketKeywords(),
             UUIDKeywords(),
             HTTPKeywords(),
-            Base64Keywords(),
-            VariableKeywords()
+            Base64Keywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)

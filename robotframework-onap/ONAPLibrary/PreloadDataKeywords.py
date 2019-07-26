@@ -14,6 +14,7 @@
 
 from robot import utils
 from robot.api.deco import keyword
+from robot.libraries.BuiltIn import BuiltIn
 import os.path
 import json
 
@@ -25,6 +26,7 @@ class PreloadDataKeywords(object):
     def __init__(self):
         super(PreloadDataKeywords, self).__init__()
         self._cache = utils.ConnectionCache('No Preload Data directories loaded')
+        self.builtin = BuiltIn()
 
     @keyword
     def set_directory(self, alias, preload_data_directory):
