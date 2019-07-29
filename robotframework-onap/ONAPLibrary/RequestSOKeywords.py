@@ -38,10 +38,11 @@ class RequestSOKeywords(object):
         # do this until it is done
         for i in range(tries):
             resp = self.reqs.get_request("so", endpoint, data_path, auth=auth)
-            self.builtin.should_not_contain_any(resp.text, fail_states)
             logger.info(resp.json()['request']['requestStatus']['requestState'])
+            if resp.json()['request']['requestStatus']['requestState'] in fail_states:
+                self.builtin.fail("Received failure response from so " + resp.text)
             if resp.json()['request']['requestStatus']['requestState'] in complete_states:
-                logger.info("Received response from so " + resp.text)
+                logger.info("Received complete response from so " + resp.text)
                 return True, resp
             else:
                 self.builtin.sleep(interval, "Response from SO is not in requested status")
