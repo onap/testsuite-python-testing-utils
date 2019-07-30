@@ -91,7 +91,11 @@ class KafkaKeywords(object):
                                  group_id=cgn,
                                  request_timeout_ms=10001)
 
-	partitions = [TopicPartition(str(topic_name), 0), TopicPartition(str(topic_name), 1), TopicPartition(str(topic_name), 2)]
+        consumer.topics()
+        partition_set = consumer.partitions_for_topic(str(topic_name))
+        partitions = []
+        for val in partition_set:
+            partitions.append(TopicPartition(str(topic_name), val))
 	consumer.assign(partitions)
 	last = consumer.end_offsets(partitions)
 	offset = max(last.values())
