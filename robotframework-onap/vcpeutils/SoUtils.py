@@ -25,11 +25,6 @@ class SoUtils:
         self.so_userpass = 'InfraPortalClient', 'password1$'
         self.so_headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
-        # aai urls
-        self.aai_userpass = 'AAI', 'AAI'
-        self.aai_query_port = '8443'
-        self.aai_host = 'aai.onap'
-
         # mr utls
         self.mr_ip_addr = 'mr.onap'
         self.mr_ip_port = '3904'
@@ -248,8 +243,7 @@ class SoUtils:
             return None
 
         # wait for AAI to complete traversal
-        endpoint = "https://{0}:{1}".format(self.aai_host, self.aai_query_port)
-        self.aai.wait_for_node_to_exist(endpoint, 'service-instance', 'service-instance-id', svc_instance_id)
+        self.aai.wait_for_node_to_exist('service-instance', 'service-instance-id', svc_instance_id)
 
         # create networks
         for model in parser.net_models:
@@ -311,8 +305,7 @@ class SoUtils:
             if not vnf_instance_id:
                 logger.error('No VNF instance ID returned!')
                 sys.exit()
-            endpoint = "https://{0}:{1}".format(self.aai_host, self.aai_query_port)
-            self.aai.wait_for_node_to_exist(endpoint, 'generic-vnf', 'vnf-id', vnf_instance_id)
+            self.aai.wait_for_node_to_exist('generic-vnf', 'vnf-id', vnf_instance_id)
 
         # SDNC Preload 
         preloader = PreloadSDNCKeywords()
