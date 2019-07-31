@@ -19,6 +19,7 @@ import time
 
 from ONAPLibrary.RequestsHelper import RequestsHelper
 from ONAPLibrary.HTTPKeywords import HTTPKeywords
+from ONAPLibrary.VariableKeywords import VariableKeywords
 
 
 class BaseAAIKeywords(object):
@@ -30,6 +31,11 @@ class BaseAAIKeywords(object):
         self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
         self.http = HTTPKeywords()
+        self.vars = VariableKeywords()
+        aai_ip_addr = self.vars.get_globally_injected_parameters()['GLOBAL_INJECTED_AAI_IP_ADDR']
+        aai_server_protocol = self.vars.get_global_parameters()['GLOBAL_AAI_SERVER_PROTOCOL']
+        aai_server_port = self.vars.get_global_parameters()['GLOBAL_AAI_SERVER_PORT']
+        self.aai_endpoint = aai_server_protocol + '://' + aai_ip_addr + ':' + aai_server_port
 
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
@@ -54,15 +60,15 @@ class BaseAAIKeywords(object):
     def run_delete_request(self, endpoint, data_path, resource_version, accept="application/json", auth=None):
         """Runs an AAI delete request"""
         self.http.disable_warnings()
-        return self.reqs.delete_request("aai", endpoint, data_path + '?resource-version=' + resource_version, data=None,
-                                        sdc_user=None, accept=accept, auth=auth)
+        return self.reqs.delete_request("aai", endpoint, data_path + '?resource-version=' + resource_version,
+                                        data=None, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
-    def wait_for_node_to_exist(self, endpoint, search_node_type, key, uuid, auth=None):
+    def wait_for_node_to_exist(self, search_node_type, key, uuid, auth=None):
         logger.info('Waiting for AAI traversal to complete...')
         for i in range(30):
             time.sleep(1)
-            result = self.find_node(endpoint, search_node_type, key, uuid, auth=auth)
+            result = self.find_node(search_node_type, key, uuid, auth=auth)
             if result:
                 return result
 
@@ -72,10 +78,10 @@ class BaseAAIKeywords(object):
         self.builtin.fail(error_message)
 
     @keyword
-    def find_node(self, endpoint, search_node_type, key, node_uuid, auth=None):
+    def find_node(self, search_node_type, key, node_uuid, auth=None):
         data_path = '/aai/v11/search/nodes-query?search-node-type={0}&filter={1}:EQUALS:{2}'.format(
             search_node_type, key, node_uuid)
         self.http.disable_warnings()
-        resp = self.reqs.get_request("aai", endpoint, data_path, accept="application/json", auth=auth)
+        resp = self.reqs.get_request("aai", self.aai_endpoint, data_path, accept="application/json", auth=auth)
         response = resp.json()
         return 'result-data' in response
