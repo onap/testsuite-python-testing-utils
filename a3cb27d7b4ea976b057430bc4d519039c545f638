@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53f865ac_4c6774ca",
+        "filename": "robotframework-onap/ONAPLibrary/SocketKeywords.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 37
+      },
+      "writtenOn": "2019-08-05T14:42:14Z",
+      "side": 1,
+      "message": "can you add these to the main keyword and then just make the ssl attributes optional with ca\u003dNone, cert\u003dNone and key\u003dNone? This should also allow people to send over ssl with no cert (ssl.cert_required is false)",
+      "revId": "a3cb27d7b4ea976b057430bc4d519039c545f638",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
