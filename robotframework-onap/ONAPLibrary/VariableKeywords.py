@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from robot.libraries.BuiltIn import BuiltIn
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.api.deco import keyword
+import os
 
 
 class VariableKeywords(object):
@@ -25,17 +26,28 @@ class VariableKeywords(object):
 
     @keyword
     def get_globally_injected_parameters(self):
-        dictionary = self.builtin.get_variables(no_decoration=True)
-        return self._filter_variables_by_key_prefix(dictionary, "GLOBAL_INJECTED_")
+        return self._filter_variables_by_key_prefix(self._retrieve_robot_variables(), "GLOBAL_INJECTED_")
 
     @keyword
     def get_global_parameters(self):
-        dictionary = self.builtin.get_variables(no_decoration=True)
-        global_variables = self._filter_variables_by_key_prefix(dictionary, "GLOBAL_")
+        global_variables = self._filter_variables_by_key_prefix(self._retrieve_robot_variables(), "GLOBAL_")
         # strip out global injected (get those above)
         for key in self.get_globally_injected_parameters():
             del global_variables[key]
         return global_variables
+
+    def _retrieve_robot_variables(self):
+        """ try to get the parameters from the robot keyword, but if it is ran out of robot context,
+        allow an env to be used instead """
+        dictionary = dict()
+        try:
+            dictionary = self.builtin.get_variables(no_decoration=True)
+        except RobotNotRunningError:
+            try:
+                dictionary = os.environ['GLOBAL_ROBOT_VARIABLES']
+            except KeyError:
+                pass
+        return dictionary
 
     @staticmethod
     def _filter_variables_by_key_prefix(dictionary, partial):

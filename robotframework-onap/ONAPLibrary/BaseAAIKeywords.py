@@ -18,7 +18,6 @@ from robot.libraries.BuiltIn import BuiltIn
 import time
 
 from ONAPLibrary.RequestsHelper import RequestsHelper
-from ONAPLibrary.HTTPKeywords import HTTPKeywords
 from ONAPLibrary.VariableKeywords import VariableKeywords
 
 
@@ -30,36 +29,31 @@ class BaseAAIKeywords(object):
         super(BaseAAIKeywords, self).__init__()
         self.reqs = RequestsHelper()
         self.builtin = BuiltIn()
-        self.http = HTTPKeywords()
         self.vars = VariableKeywords()
-        aai_ip_addr = self.vars.get_globally_injected_parameters()['GLOBAL_INJECTED_AAI_IP_ADDR']
-        aai_server_protocol = self.vars.get_global_parameters()['GLOBAL_AAI_SERVER_PROTOCOL']
-        aai_server_port = self.vars.get_global_parameters()['GLOBAL_AAI_SERVER_PORT']
+        aai_ip_addr = self.vars.get_globally_injected_parameters().get('GLOBAL_INJECTED_AAI_IP_ADDR', '')
+        aai_server_protocol = self.vars.get_global_parameters().get('GLOBAL_AAI_SERVER_PROTOCOL', '')
+        aai_server_port = self.vars.get_global_parameters().get('GLOBAL_AAI_SERVER_PORT', '')
         self.aai_endpoint = aai_server_protocol + '://' + aai_ip_addr + ':' + aai_server_port
 
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an AAI get request"""
-        self.http.disable_warnings()
         return self.reqs.get_request("aai", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
-        self.http.disable_warnings()
         return self.reqs.post_request("aai", endpoint, data_path, data, sdc_user=None, files=None,
                                       accept=accept, auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
-        self.http.disable_warnings()
         return self.reqs.put_request("aai", endpoint, data_path, data, sdc_user=None, accept=accept, auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, resource_version, accept="application/json", auth=None):
         """Runs an AAI delete request"""
-        self.http.disable_warnings()
         return self.reqs.delete_request("aai", endpoint, data_path + '?resource-version=' + resource_version,
                                         data=None, sdc_user=None, accept=accept, auth=auth)
 
@@ -67,6 +61,7 @@ class BaseAAIKeywords(object):
     def wait_for_node_to_exist(self, search_node_type, key, uuid, auth=None):
         logger.info('Waiting for AAI traversal to complete...')
         for i in range(30):
+            logger.trace("running iteration " + str(i))
             time.sleep(1)
             result = self.find_node(search_node_type, key, uuid, auth=auth)
             if result:
@@ -81,7 +76,6 @@ class BaseAAIKeywords(object):
     def find_node(self, search_node_type, key, node_uuid, auth=None):
         data_path = '/aai/v11/search/nodes-query?search-node-type={0}&filter={1}:EQUALS:{2}'.format(
             search_node_type, key, node_uuid)
-        self.http.disable_warnings()
         resp = self.reqs.get_request("aai", self.aai_endpoint, data_path, accept="application/json", auth=auth)
         response = resp.json()
         return 'result-data' in response
