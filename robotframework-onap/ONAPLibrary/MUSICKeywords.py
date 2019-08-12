@@ -30,8 +30,7 @@ class MUSICKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an MUSIC get request"""
-        resp = self.reqs.get_request("music", endpoint, data_path, accept, auth)
-        return resp
+        return self.reqs.get_request(alias="music", endpoint=endpoint, data_path=data_path, accept=accept, auth=auth)
 
     def run_health_check(self, endpoint, health_check_path):
         """Runs MUSIC Health check"""

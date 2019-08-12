@@ -35,14 +35,15 @@ class SNIROKeywords(object):
     @keyword
     def run_sniro_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs OOF-SNIRO Get request"""
-        resp = self.reqs.get_request("oof-sniro", endpoint, data_path, accept, auth)
+        resp = self.reqs.get_request(alias="oof-sniro", endpoint=endpoint, data_path=data_path, accept=accept,
+                                     auth=auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
 
     @keyword
     def reset_sniro(self, endpoint):
         logger.debug('Clearing SNIRO data')
-        resp = self.reqs.post_request("oof-sniro", endpoint, '/reset', None)
+        resp = self.reqs.post_request(alias="oof-sniro", endpoint=endpoint, data_path='/reset')
         self.builtin.should_be_equal_as_strings(resp.status_code, "200", 'Clearing SNIRO date failed.')
 
     @keyword
@@ -60,6 +61,6 @@ class SNIROKeywords(object):
         base64_sniro_data = self.base64.base64_encode(sniro_data)
         replace_dict = {'base64_sniro_data': base64_sniro_data}
         sniro_request = self.templating.apply_template("sniro", template_sniro_request, replace_dict)
-        resp = self.reqs.post_request("oof-sniro", endpoint, '/', sniro_request)
+        resp = self.reqs.post_request(alias="oof-sniro", endpoint=endpoint, data_path='/', data=sniro_request)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200", 'SNIRO preloading failed.')
         return True

@@ -13,35 +13,36 @@
 # limitations under the License.
 
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
-
 from ONAPLibrary.RequestsHelper import RequestsHelper
 
 
-class BaseSDNCKeywords(object):
-    """SDNC is an ONAP testing library for Robot Framework that provides functionality for interacting with the network
-    controller. """
+class BaseCLAMPKeywords(object):
+    """The main interface for interacting with CLAMP. It handles low level stuff like managing the http request library
+    and required fields. """
 
     def __init__(self):
-        super(BaseSDNCKeywords, self).__init__()
+        super(BaseCLAMPKeywords, self).__init__()
         self.reqs = RequestsHelper()
-        self.builtin = BuiltIn()
 
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
-        """Runs an SDNC get request"""
-        resp = self.reqs.get_request(alias="sdnc", endpoint=endpoint, data_path=data_path, accept=accept, auth=auth)
-        self.builtin.should_be_equal_as_strings(resp.status_code, "200")
-        return resp
+        """Runs an CLAMP get request"""
+        return self.reqs.get_request(alias="clamp", endpoint=endpoint, data_path=data_path, accept=accept, auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
-        """Runs an SDNC post request"""
-        return self.reqs.post_request(alias="sdnc", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+        """Runs an CLAMP post request"""
+        return self.reqs.post_request(alias="clamp", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
                                       auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
-        """Runs an SDNC post request"""
-        return self.reqs.put_request(alias="sdnc", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+        """Runs an CLAMP post request"""
+        return self.reqs.put_request(alias="clamp", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
                                      auth=auth)
+
+    @keyword
+    def run_delete_request(self, endpoint, data_path, data, accept="application/json", auth=None):
+        """Runs an CLAMP delete request"""
+        return self.reqs.delete_request(alias="clamp", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                        auth=auth)
