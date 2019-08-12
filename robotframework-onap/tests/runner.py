@@ -8,6 +8,7 @@ from tests.ONAPLibrary.ProtobufKeywordsTest import ProtobufKeywordsTest
 from tests.ONAPLibrary.UUIDKeywordsTest import UUIDKeywordsTest
 from tests.ONAPLibrary.ServiceMappingKeywordsTests import ServiceMappingKeywordsTests
 from tests.ONAPLibrary.Base64KeywordsTests import Base64KeywordsTests
+from tests.ONAPLibrary.RequestsHelperTests import RequestsHelperTests
 
 # initialize the test suite
 loader = TestLoader()
@@ -19,6 +20,7 @@ suite.addTests(loader.loadTestsFromTestCase(SoUtilsTest))
 suite.addTests(loader.loadTestsFromTestCase(UUIDKeywordsTest))
 suite.addTests(loader.loadTestsFromTestCase(ServiceMappingKeywordsTests))
 suite.addTests(loader.loadTestsFromTestCase(Base64KeywordsTests))
+suite.addTests(loader.loadTestsFromTestCase(RequestsHelperTests))
 
 # initialize a runner, pass it your suite and run it
 runner = TextTestRunner(verbosity=3)

@@ -30,21 +30,24 @@ class BaseSOKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an SO get request"""
-        resp = self.reqs.get_request("so", endpoint, data_path, accept=accept, auth=auth)
+        resp = self.reqs.get_request(alias="so", endpoint=endpoint, data_path=data_path, accept=accept, auth=auth)
         self.builtin.should_be_equal_as_strings(resp.status_code, "200")
         return resp
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SO post request"""
-        return self.reqs.post_request("so", endpoint, data_path, data, accept=accept, auth=auth)
+        return self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                      auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SO post request"""
-        return self.reqs.put_request("so", endpoint, data_path, data, accept=accept, auth=auth)
+        return self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                     auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an SO delete request"""
-        return self.reqs.delete_request("so", endpoint, data_path, data=data, accept=accept, auth=auth)
+        return self.reqs.delete_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                        auth=auth)
