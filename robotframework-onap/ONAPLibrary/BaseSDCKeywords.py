@@ -31,25 +31,29 @@ class BaseSDCKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, user, accept="application/json", auth=None):
         """Runs an SDC get request"""
-        return self.reqs.get_request("sdc", endpoint, data_path, sdc_user=user, accept=accept, auth=auth)
+        return self.reqs.get_request(alias="sdc", endpoint=endpoint, data_path=data_path, sdc_user=user, accept=accept,
+                                     auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
         """Runs an SDC post request"""
-        return self.reqs.post_request("sdc", endpoint, data_path, data, user, files=None, accept=accept, auth=auth)
+        return self.reqs.post_request(alias="sdc", endpoint=endpoint, data_path=data_path, data=data, sdc_user=user,
+                                      accept=accept, auth=auth)
 
     @keyword
     def run_post_files_request(self, endpoint, data_path, files, user, accept="application/json", auth=None):
         """Runs an SDC post files request"""
-        return self.reqs.post_request("sdc", endpoint, data_path, None, user, files=files, accept=accept,
-                                      content_type="multipart/form-data", auth=auth)
+        return self.reqs.post_request(alias="sdc", endpoint=endpoint, data_path=data_path, sdc_user=user, files=files,
+                                      accept=accept, content_type="multipart/form-data", auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
         """Runs an SDC post request"""
-        return self.reqs.put_request("sdc", endpoint, data_path, data, sdc_user=user, accept=accept, auth=auth)
+        return self.reqs.put_request(alias="sdc", endpoint=endpoint, data_path=data_path, data=data, sdc_user=user,
+                                     accept=accept, auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, data, user, accept="application/json", auth=None):
         """Runs an SDC delete request"""
-        return self.reqs.delete_request("sdc", endpoint, data_path, data, sdc_user=user, accept=accept, auth=auth)
+        return self.reqs.delete_request(alias="sdc", endpoint=endpoint, data_path=data_path, data=data, sdc_user=user,
+                                        accept=accept, auth=auth)

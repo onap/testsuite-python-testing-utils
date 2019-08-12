@@ -14,10 +14,11 @@
 
 from ONAPLibrary.UUIDKeywords import UUIDKeywords
 from RequestsLibrary import RequestsLibrary
-from robot.api import logger
 import hashlib
 from ONAPLibrary.Base64Keywords import Base64Keywords
 from ONAPLibrary.HTTPKeywords import HTTPKeywords
+from ONAPLibrary.RequestsDecorators import log_wrapped
+from ONAPLibrary.RequestsDecorators import default_keywords
 
 
 class RequestsHelper(object):
@@ -30,55 +31,41 @@ class RequestsHelper(object):
         self.requests = RequestsLibrary()
         self.http = HTTPKeywords()
 
-    def get_request(self, alias, endpoint, data_path, sdc_user=None, accept="application/json", auth=None,
-                    client_certs=None):
+    @default_keywords
+    @log_wrapped
+    def get_request(self, **kwargs):
         """Runs a get request"""
-        self.http.disable_warnings()
-        logger.info("Creating session" + endpoint)
-        self._create_session(alias, endpoint, auth=auth, client_certs=client_certs)
-        headers = self._create_headers(sdc_user_id=sdc_user, accept=accept)
-        resp = self.requests.get_request(alias, data_path, headers=headers)
-        logger.info("Received response from [" + alias + "]: " + resp.text)
-        return resp
+        return self.requests.get_request(alias=kwargs['alias'],  uri=kwargs['data_path'],
+                                         headers=self._perform_setup(**kwargs))
 
-    def post_request(self, alias, endpoint, data_path, data, sdc_user=None, files=None, accept="application/json",
-                     content_type="application/json", auth=None, client_certs=None):
+    @default_keywords
+    @log_wrapped
+    def post_request(self, **kwargs):
         """Runs a post request"""
-        self.http.disable_warnings()
-        logger.info("Creating session" + endpoint)
-        if data is not None:
-            md5 = hashlib.md5()
-            md5.update(data)
-            md5checksum = Base64Keywords().base64_encode(md5.hexdigest())
-        else:
-            md5checksum = None
-        self._create_session(alias, endpoint, auth=auth, client_certs=client_certs)
-        headers = self._create_headers(sdc_user_id=sdc_user, accept=accept, content_type=content_type, md5=md5checksum)
-        resp = self.requests.post_request(alias,  data_path, files=files, data=data, headers=headers)
-        logger.info("Received response from [" + alias + "]: " + resp.text)
-        return resp
+        kwargs['md5'] = self._format_md5(kwargs['data'])
+        return self.requests.post_request(alias=kwargs['alias'],  uri=kwargs['data_path'], files=kwargs['files'],
+                                          data=kwargs['data'], headers=self._perform_setup(**kwargs))
 
-    def put_request(self, alias, endpoint, data_path, data, sdc_user=None, accept="application/json",
-                    auth=None, client_certs=None):
+    @default_keywords
+    @log_wrapped
+    def put_request(self, **kwargs):
         """Runs a put request"""
-        self.http.disable_warnings()
-        logger.info("Creating session" + endpoint)
-        self._create_session(alias, endpoint, auth=auth, client_certs=client_certs)
-        headers = self._create_headers(sdc_user_id=sdc_user, accept=accept)
-        resp = self.requests.put_request(alias,  data_path, data=data, headers=headers)
-        logger.info("Received response from [" + alias + "]: " + resp.text)
-        return resp
+        return self.requests.put_request(alias=kwargs['alias'],  uri=kwargs['data_path'], data=kwargs['data'],
+                                         headers=self._perform_setup(**kwargs))
 
-    def delete_request(self, alias, endpoint, data_path, data=None, sdc_user=None, accept="application/json",
-                       auth=None, client_certs=None):
+    @default_keywords
+    @log_wrapped
+    def delete_request(self, **kwargs):
         """Runs a delete request"""
+        return self.requests.delete_request(alias=kwargs['alias'],  uri=kwargs['data_path'], data=kwargs['data'],
+                                            headers=self._perform_setup(**kwargs))
+
+    def _perform_setup(self, **kwargs):
         self.http.disable_warnings()
-        logger.info("Creating session" + endpoint)
-        self._create_session(alias, endpoint, auth=auth, client_certs=client_certs)
-        headers = self._create_headers(sdc_user_id=sdc_user, accept=accept)
-        resp = self.requests.delete_request(alias, data_path, data=data, headers=headers)
-        logger.info("Received response from [" + alias + "]: " + resp.text)
-        return resp
+        self._create_session(alias=kwargs['alias'], endpoint=kwargs['endpoint'], auth=kwargs['auth'],
+                             client_certs=kwargs['client_certs'])
+        return self._create_headers(sdc_user_id=kwargs['sdc_user'], accept=kwargs['accept'],
+                                    content_type=kwargs['content_type'], md5=kwargs.get("md5", None))
 
     def _create_session(self, alias, endpoint, auth=None, client_certs=None):
         if client_certs is not None:
@@ -100,3 +87,12 @@ class RequestsHelper(object):
         if md5 is not None:
             headers["Content-MD5"] = md5
         return headers
+
+    @staticmethod
+    def _format_md5(md5_input):
+        if md5_input is not None:
+            md5 = hashlib.md5()
+            md5.update(md5_input)
+            return Base64Keywords().base64_encode(md5.hexdigest())
+        else:
+            return None

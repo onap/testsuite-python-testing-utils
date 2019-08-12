@@ -38,24 +38,25 @@ class BaseAAIKeywords(object):
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None):
         """Runs an AAI get request"""
-        return self.reqs.get_request("aai", endpoint, data_path, sdc_user=None, accept=accept, auth=auth)
+        return self.reqs.get_request(alias="aai", endpoint=endpoint, data_path=data_path, accept=accept, auth=auth)
 
     @keyword
     def run_post_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
-        return self.reqs.post_request("aai", endpoint, data_path, data, sdc_user=None, files=None,
-                                      accept=accept, auth=auth)
+        return self.reqs.post_request(alias="aai", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                      auth=auth)
 
     @keyword
     def run_put_request(self, endpoint, data_path, data, accept="application/json", auth=None):
         """Runs an AAI post request"""
-        return self.reqs.put_request("aai", endpoint, data_path, data, sdc_user=None, accept=accept, auth=auth)
+        return self.reqs.put_request(alias="aai", endpoint=endpoint, data_path=data_path, data=data, accept=accept,
+                                     auth=auth)
 
     @keyword
     def run_delete_request(self, endpoint, data_path, resource_version, accept="application/json", auth=None):
         """Runs an AAI delete request"""
-        return self.reqs.delete_request("aai", endpoint, data_path + '?resource-version=' + resource_version,
-                                        data=None, sdc_user=None, accept=accept, auth=auth)
+        return self.reqs.delete_request(alias="aai", endpoint=endpoint, accept=accept, auth=auth,
+                                        data_path=data_path + '?resource-version=' + resource_version)
 
     @keyword
     def wait_for_node_to_exist(self, search_node_type, key, uuid, auth=None):

@@ -58,5 +58,9 @@ setup(
         'Framework :: Robot Framework :: Library',
         'License :: OSI Approved :: Apache Software License'
     ],
-    test_suite="tests.runner"
+    test_suite="tests.runner",
+    tests_require=[
+        'mock',
+        'requests-mock'
+    ]
 )

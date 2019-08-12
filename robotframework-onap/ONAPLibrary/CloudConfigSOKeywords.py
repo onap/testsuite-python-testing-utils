@@ -38,7 +38,7 @@ class CloudConfigSOKeywords(object):
         """Creates a cloud configuration in SO, so it knows how to talk to an openstack cloud"""
         self.templating.create_environment("so", templates_folder)
         data = self.templating.apply_template("so", template, arguments)
-        resp = self.reqs.post_request("so", endpoint, data_path, data, auth=auth)
+        resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")
 
     @keyword
@@ -48,7 +48,7 @@ class CloudConfigSOKeywords(object):
         self.templating.create_environment("so", templates_folder)
         data = self.templating.apply_template("so", template, arguments)
         if get_resp.status_code == 404:
-            resp = self.reqs.post_request("so", endpoint, data_path, data, auth=auth)
+            resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         else:
-            resp = self.reqs.put_request("so", endpoint, data_path, data, auth=auth)
+            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")

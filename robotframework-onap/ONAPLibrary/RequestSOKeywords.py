@@ -37,7 +37,7 @@ class RequestSOKeywords(object):
             complete_states = ["COMPLETE"]
         # do this until it is done
         for i in range(tries):
-            resp = self.reqs.get_request("so", endpoint, data_path, auth=auth)
+            resp = self.reqs.get_request(alias="so", endpoint=endpoint, data_path=data_path, auth=auth)
             logger.info(resp.json()['request']['requestStatus']['requestState'])
             if resp.json()['request']['requestStatus']['requestState'] in fail_states:
                 self.builtin.fail("Received failure response from so " + resp.text)
@@ -51,7 +51,7 @@ class RequestSOKeywords(object):
     @keyword
     def run_create_request(self, endpoint, data_path, data, auth=None):
         """Runs an SO create request and returns the request id and instance id."""
-        response = self.reqs.post_request("so", endpoint, data_path, data, auth=auth)
+        response = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         logger.info("Creation request submitted to SO, got response")
 
         req_id = response.get('requestReferences', {}).get('requestId', '')

@@ -31,4 +31,4 @@ class PreloadSDNCKeywords(object):
         """Runs an SDNC request to preload certain data."""
         self.templating.create_environment("sdnc", templates_folder)
         data = self.templating.apply_template("sdnc", template, preload_dictionary)
-        return self.reqs.post_request("sdnc", endpoint, data_path, data)
+        return self.reqs.post_request(alias="sdnc", endpoint=endpoint, data_path=data_path, data=data)
