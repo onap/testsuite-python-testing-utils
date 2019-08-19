@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Marco Platania <platania@research.att.com>
+Submitted-by: Marco Platania <platania@research.att.com>
+Submitted-at: Mon, 19 Aug 2019 13:03:37 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/93372
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
