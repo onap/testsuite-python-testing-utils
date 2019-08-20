@@ -33,7 +33,7 @@ class BaseAAIKeywords(object):
         aai_ip_addr = self.vars.get_globally_injected_parameters().get('GLOBAL_INJECTED_AAI_IP_ADDR', '')
         aai_server_protocol = self.vars.get_global_parameters().get('GLOBAL_AAI_SERVER_PROTOCOL', '')
         aai_server_port = self.vars.get_global_parameters().get('GLOBAL_AAI_SERVER_PORT', '')
-        self.aai_endpoint = aai_server_protocol + '://' + aai_ip_addr + ':' + aai_server_port
+        self.aai_endpoint = str(aai_server_protocol) + '://' + str(aai_ip_addr) + ':' + str(aai_server_port)
 
     @keyword
     def run_get_request(self, endpoint, data_path, accept="application/json", auth=None, client_certs=None):

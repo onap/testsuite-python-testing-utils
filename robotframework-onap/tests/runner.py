@@ -9,12 +9,14 @@ from tests.ONAPLibrary.UUIDKeywordsTest import UUIDKeywordsTest
 from tests.ONAPLibrary.ServiceMappingKeywordsTests import ServiceMappingKeywordsTests
 from tests.ONAPLibrary.Base64KeywordsTests import Base64KeywordsTests
 from tests.ONAPLibrary.RequestsHelperTests import RequestsHelperTests
+from tests.ONAPLibrary.AAITests import AAITests
 
 # initialize the test suite
 loader = TestLoader()
 suite = TestSuite()
 
 # add tests to the test suite
+suite.addTests(loader.loadTestsFromTestCase(AAITests))
 suite.addTests(loader.loadTestsFromTestCase(ProtobufKeywordsTest))
 suite.addTests(loader.loadTestsFromTestCase(SoUtilsTest))
 suite.addTests(loader.loadTestsFromTestCase(UUIDKeywordsTest))

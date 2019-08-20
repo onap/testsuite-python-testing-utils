@@ -11,19 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import base64
+
+import requests_mock
 from unittest import TestCase
+from unittest import main
 
-from ONAPLibrary.Base64Keywords import Base64Keywords
+from ONAPLibrary.AAI import AAI
 
 
-class Base64KeywordsTests(TestCase):
+class AAITests(TestCase):
 
-    def test_base64_encode(self):
-        enc = Base64Keywords().base64_encode("string_to_encode")
-        enc_base = base64.b64encode("string_to_encode".encode("utf-8"))
-        self.assertEqual(enc_base, enc)
+    def test_get(self):
+        with requests_mock.mock() as m:
+            aai = AAI()
+            m.get('http://test.com/', text='data')
+            resp = aai.run_get_request(endpoint="http://test.com", data_path="/",
+                                       accept="application/json", auth={"user", "pass"})
+        self.assertEqual("data", resp.text)
 
-    def test_base64_decode(self):
-        enc = Base64Keywords().base64_decode('c3RyaW5nX3RvX2RlY29kZQ==')
-        self.assertEqual("string_to_decode", enc.decode("utf-8"))
+    if __name__ == '__main__':
+        main()
