@@ -90,9 +90,9 @@ class RequestsHelper(object):
 
     @staticmethod
     def _format_md5(md5_input):
-        if md5_input is not None:
+        if md5_input is not None and isinstance(md5_input, str):
             md5 = hashlib.md5()
-            md5.update(md5_input)
+            md5.update(md5_input.encode('utf-8'))
             return Base64Keywords().base64_encode(md5.hexdigest())
         else:
             return None
