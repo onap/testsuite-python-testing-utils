@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Morgan Richomme <morgan.richomme@orange.com>
+Code-Review+2: Brian Freeman <bf1936@att.com>
+Submitted-by: Brian Freeman <bf1936@att.com>
+Submitted-at: Fri, 23 Aug 2019 12:28:11 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/94163
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
