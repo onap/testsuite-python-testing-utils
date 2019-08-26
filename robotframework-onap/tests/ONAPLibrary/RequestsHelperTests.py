@@ -45,6 +45,26 @@ class RequestsHelperTests(TestCase):
         with requests_mock.mock() as m:
             rh = RequestsHelper()
             m.get('http://test.com/', text='data')
-            resp = rh.get_request(alias="alias", endpoint="http://test.com", data_path="/", sdc_user="test123",
-                                  accept="application/json", content_type="application/json", files="test/123")
+            resp = rh.post_request(alias="alias", endpoint="http://test.com", data_path="/", sdc_user="test123",
+                                   accept="application/json", content_type="application/json", files="test/123")
         self.assertEqual("data", resp.text)
+
+    def test_md5_string(self):
+        with requests_mock.mock() as m:
+            rh = RequestsHelper()
+            m.post('http://test.com/', text='data', additional_matcher=self._match_md5_request_header)
+            resp = rh.post_request(alias="alias", endpoint="http://test.com", data_path="/", sdc_user="test123",
+                                   accept="application/json", content_type="text/string", data="test/123")
+            self.assertEqual("data", resp.text)
+
+    def test_md5_bytes(self):
+        with requests_mock.mock() as m:
+            rh = RequestsHelper()
+            m.post('http://test.com/', text='data', additional_matcher=self._match_md5_request_header)
+            resp = rh.post_request(alias="alias", endpoint="http://test.com", data_path="/", sdc_user="test123",
+                                   accept="application/json", content_type="text/string", data="test/123")
+            self.assertEqual("data", resp.text)
+
+    @staticmethod
+    def _match_md5_request_header(request):
+        return (request.headers.get('Content-MD5', None)) is not None
