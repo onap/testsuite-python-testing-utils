@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 from ONAPLibrary.BaseOpenstackKeywords import BaseOpenstackKeywords
 from ONAPLibrary.HEATKeywords import HEATKeywords
 

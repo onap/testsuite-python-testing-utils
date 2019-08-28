@@ -96,14 +96,14 @@ class KafkaKeywords(object):
         partitions = []
         for val in partition_set:
             partitions.append(TopicPartition(str(topic_name), val))
-	consumer.assign(partitions)
-	last = consumer.end_offsets(partitions)
-	offset = max(last.values())
+        consumer.assign(partitions)
+        last = consumer.end_offsets(partitions)
+        offset = max(last.values())
 
         if set_offset_to_earliest:
             consumer.seek_to_beginning()
         else:
             for tp in partitions:
-		consumer.seek(tp, offset - 1)
+                consumer.seek(tp, offset - 1)
 
         return consumer

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ONAPLibrary.SNIROKeywords import SNIROKeywords
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 
 
 class OOF(HybridCore):

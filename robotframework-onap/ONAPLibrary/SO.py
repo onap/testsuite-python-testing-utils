@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ONAPLibrary.RequestSOKeywords import RequestSOKeywords
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 from ONAPLibrary.BaseSOKeywords import BaseSOKeywords
 from ONAPLibrary.CloudConfigSOKeywords import CloudConfigSOKeywords
 

@@ -39,6 +39,7 @@ setup(
         'requests',
         'robotframework',
         'robotframework-requests',
+        'robotlibcore-temp',
         'six',
         'urllib3'
     ],  # what we need to run library
