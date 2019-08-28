@@ -31,7 +31,7 @@ class CloudConfigSOKeywords(object):
     @keyword
     def get_cloud_configuration(self, endpoint, data_path, site_name, auth=None):
         """Gets cloud configuration in SO"""
-        return self.reqs.get_request("so", endpoint, data_path + "/" + site_name, auth=auth)
+        return self.reqs.get_request(alias="so", endpoint=endpoint, data_path=data_path + "/" + site_name, auth=auth)
 
     @keyword
     def create_cloud_configuration(self, endpoint, data_path, templates_folder, template, arguments, auth=None):
