@@ -80,7 +80,7 @@ class BaseAAIKeywords(object):
     def find_node(self, search_node_type, key, node_uuid, auth=None, client_certs=None):
         data_path = '/aai/v11/search/nodes-query?search-node-type={0}&filter={1}:EQUALS:{2}'.format(
             search_node_type, key, node_uuid)
-        resp = self.reqs.get_request("aai", self.aai_endpoint, data_path, accept="application/json", auth=auth,
-                                     client_certs=client_certs)
+        resp = self.reqs.get_request(alias="aai", endpoint=self.aai_endpoint, data_path=data_path,
+                                     accept="application/json", auth=auth,  client_certs=client_certs)
         response = resp.json()
         return 'result-data' in response
