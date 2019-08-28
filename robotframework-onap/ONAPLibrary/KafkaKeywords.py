@@ -105,5 +105,4 @@ class KafkaKeywords(object):
         else:
             for tp in partitions:
                 consumer.seek(tp, offset - 1)
-
         return consumer
