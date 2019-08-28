@@ -1,0 +1,11 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Morgan Richomme <morgan.richomme@orange.com>
+Code-Review+1: Lasse Kaihlavirta <l.kaihlavirt@partner.samsung.com>
+Code-Review+2: Daniel Rose <dr695h@att.com>
+Code-Review+2: Marco Platania <platania@research.att.com>
+Verified+1: Marco Platania <platania@research.att.com>
+Submitted-by: Marco Platania <platania@research.att.com>
+Submitted-at: Wed, 28 Aug 2019 13:42:17 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/94306
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
