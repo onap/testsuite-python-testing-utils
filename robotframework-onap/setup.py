@@ -39,12 +39,12 @@ setup(
         'requests',
         'robotframework',
         'robotframework-requests',
+        'robotlibcore-temp',
         'six',
         'urllib3'
     ],  # what we need to run library
-    packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
+    packages=['vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
     package_dir={
-        'loadtest': 'loadtest',
         'vcpeutils': 'vcpeutils',
         'ONAPLibrary': 'ONAPLibrary'
     },  # The location of your scipts package

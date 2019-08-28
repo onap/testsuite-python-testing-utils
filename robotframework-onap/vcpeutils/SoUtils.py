@@ -1,8 +1,7 @@
-#! /usr/bin/python
-
 import time
-
-from vcpeutils.csar_parser import *
+import os
+import json
+from vcpeutils.csar_parser import CsarParser
 from robot.api import logger
 from datetime import datetime
 import sys
@@ -307,7 +306,7 @@ class SoUtils:
                 sys.exit()
             self.aai.wait_for_node_to_exist('generic-vnf', 'vnf-id', vnf_instance_id)
 
-        # SDNC Preload 
+        # SDNC Preload
         preloader = PreloadSDNCKeywords()
         vfmodule_name = '_'.join(['vf',
                                   parser.vfmodule_models[0]['modelCustomizationName'].split('..')[0].lower(),

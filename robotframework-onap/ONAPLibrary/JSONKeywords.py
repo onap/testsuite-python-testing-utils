@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json
 
+import json
 from robot.api.deco import keyword
 from deepdiff import DeepDiff
+from six import string_types
 
 
 class JSONKeywords(object):
@@ -28,11 +29,11 @@ class JSONKeywords(object):
     def json_equals(self, left, right):
         """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them,
         returning if they are equal or not."""
-        if isinstance(left, str) or isinstance(left, unicode):
+        if isinstance(left, string_types):
             left_json = json.loads(left)
         else:
             left_json = left
-        if isinstance(right, str) or isinstance(right, unicode):
+        if isinstance(right, string_types):
             right_json = json.loads(right)
         else:
             right_json = right

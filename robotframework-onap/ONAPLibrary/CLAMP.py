@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ONAPLibrary.BaseCLAMPKeywords import BaseCLAMPKeywords
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 
 
 class CLAMP(HybridCore):

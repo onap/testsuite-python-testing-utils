@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ONAPLibrary.BaseAAIKeywords import BaseAAIKeywords
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 
 
 class AAI(HybridCore):

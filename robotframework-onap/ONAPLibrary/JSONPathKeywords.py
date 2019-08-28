@@ -11,8 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json
 
+import json
+from six import string_types
 from robot.api.deco import keyword
 from jsonpath_rw import parse
 
@@ -30,7 +31,7 @@ class JSONPathKeywords(object):
         which is converted into string if needed and then compares them, returning the matches."""
 
         jsonpath_expr = parse(expression)
-        if isinstance(target, str) or isinstance(target, unicode):
+        if isinstance(target, string_types):
             search_json = json.dumps(target)
         else:
             search_json = target

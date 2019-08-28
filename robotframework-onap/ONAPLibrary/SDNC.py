@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from ONAPLibrary.PreloadSDNCKeywords import PreloadSDNCKeywords
-from ONAPLibrary.robotlibcore import HybridCore
+from robotlibcore import HybridCore
 from ONAPLibrary.BaseSDNCKeywords import BaseSDNCKeywords
 
 
