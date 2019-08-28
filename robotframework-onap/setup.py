@@ -1,66 +1,29 @@
-# Copyright 2019 AT&T Intellectual Property. All rights reserved.
+# Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# THIS FILE IS MANAGED BY THE GLOBAL REQUIREMENTS REPO - DO NOT EDIT
+import setuptools
 
-from setuptools import setup
+# In python < 2.7.4, a lazy loading of package `pbr` will break
+# setuptools if some other modules registered functions in `atexit`.
+# solution from: http://bugs.python.org/issue15881#msg170215
+try:
+    import multiprocessing  # noqa
+except ImportError:
+    pass
 
-setup(
-    name='robotframework-onap',            # This is the name of your PyPI-package.
-    keywords=["utils", "robotframework", "testing", "onap"],
-    version='0.5',                          # Update the version number for new releases
-    license="Apache 2.0",
-    description='Scripts written to be used during robot framework testing',    # Info about script
-    long_description="python-package that provides convenience methods to make certain tasks in robot framework easier."
-                     "since this uses robot framework internal libraries or may in the future, it is not meant as a"
-                     "general purpose library",
-    url="https://github.com/onap/testsuite-python-testing-utils",
-    platforms=['all'],
-    install_requires=[
-        'deepdiff',
-        'dnspython',
-        'future',
-        'jinja2',
-        'jsonpath-rw',
-        'kafka-python',
-        'paramiko',
-        'protobuf',
-        'pyyaml',
-        'requests',
-        'robotframework',
-        'robotframework-requests',
-        'six',
-        'urllib3'
-    ],  # what we need to run library
-    packages=['loadtest', 'vcpeutils', 'ONAPLibrary'],       # The name of your scripts package
-    package_dir={
-        'loadtest': 'loadtest',
-        'vcpeutils': 'vcpeutils',
-        'ONAPLibrary': 'ONAPLibrary'
-    },  # The location of your scipts package
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'Intended Audience :: Developers',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.7',
-        'Environment :: Plugins',
-        'Framework :: Robot Framework',
-        'Framework :: Robot Framework :: Library',
-        'License :: OSI Approved :: Apache Software License'
-    ],
-    test_suite="tests.runner",
-    tests_require=[
-        'mock',
-        'requests-mock'
-    ]
-)
+setuptools.setup(
+    setup_requires=['pbr>=2.0.0'],
+    pbr=True)
