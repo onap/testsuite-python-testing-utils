@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "856a4ecc_cf53e0e1",
+        "filename": "robotframework-onap/test-requirements.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 37
+      },
+      "writtenOn": "2019-08-29T14:17:23Z",
+      "side": 0,
+      "message": "Dont we want these?",
+      "revId": "d4af56d4c2f67a1285da783764f20a0c1c546592",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
