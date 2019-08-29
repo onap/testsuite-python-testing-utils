@@ -8,7 +8,4 @@ flake8 # MIT
 pylint # GPLv2
 requests
 requests-mock
-pytest
-pytest-cov
-pytest-mock
-pytest-runner
+more-itertools~=5.0.0

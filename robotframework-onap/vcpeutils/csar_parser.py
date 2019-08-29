@@ -1,18 +1,24 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+"""ONAP Service module."""
+import logging
 import os
 import zipfile
 import shutil
-import yaml
 import json
-import logging
+import yaml
 
 
 class CsarParser:
+    """CsarParser class."""
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.svc_model = {}
         self.net_models = []  # there could be multiple networks
         self.vnf_models = []  # this version only support a single VNF in the service template
-        self.vfmodule_models = []  # this version only support a single VF module in the service template
+        self.vfmodule_models = []  # support 1 VF module in the service template
 
     def get_service_yaml_from_csar(self, csar_file):
         """
@@ -34,7 +40,7 @@ class CsarParser:
                 if filename.startswith('service-') and filename.endswith('-template.yml'):
                     return os.path.join(yamldir, filename)
 
-        self.logger.error('Invalid file: ' + csar_file)
+        self.logger.error('Invalid file: %s', csar_file)
         return ''
 
     def get_service_model_info(self, svc_template):
@@ -81,7 +87,8 @@ class CsarParser:
             self.svc_model['modelVersion'] = '1.0'
 
     def get_vnf_and_network_model_info(self, svc_template):
-        """ extract vnf and network model info from yaml and convert to what to be used in SO request
+        """Extract vnf and network model info from yaml
+        And convert to what to be used in SO request
         Sample from yaml:
         "topology_template": {
             "node_templates": {
@@ -114,37 +121,39 @@ class CsarParser:
             },
         """
         node_dic = svc_template['topology_template']['node_templates']
-        for node_name, v in list(node_dic.items()):
+        for node_name, node_value in list(node_dic.items()):
             model = {
-                'modelInvariantId':  v['metadata']['invariantUUID'],
-                'modelVersionId': v['metadata']['UUID'],
-                'modelName': v['metadata']['name'],
-                'modelVersion': v['metadata']['version'],
-                'modelCustomizationId': v['metadata']['customizationUUID'],
+                'modelInvariantId':  node_value['metadata']['invariantUUID'],
+                'modelVersionId': node_value['metadata']['UUID'],
+                'modelName': node_value['metadata']['name'],
+                'modelVersion': node_value['metadata']['version'],
+                'modelCustomizationId': node_value['metadata']['customizationUUID'],
                 'modelCustomizationName': node_name
             }
 
-            if v['type'].startswith('org.openecomp.resource.vl.GenericNeutronNet'):
+            if node_value['type'].startswith('org.openecomp.resource.vl.GenericNeutronNet'):
                 # a neutron network is found
-                self.logger.info('Parser found a network: ' + node_name)
+                self.logger.info('Parser found a network: %s', node_name)
                 model['modelType'] = 'network'
                 self.net_models.append(model)
-            elif v['type'].startswith('org.openecomp.resource.vf.'):
+            elif node_value['type'].startswith('org.openecomp.resource.vf.'):
                 # a VNF is found
-                self.logger.info('Parser found a VNF: ' + node_name)
+                self.logger.info('Parser found a VNF: %s', node_name)
                 model['modelType'] = 'vnf'
                 self.vnf_models.append(model)
             else:
-                self.logger.warning('Parser found a node that is neither a network nor a VNF: ' + node_name)
+                self.logger.warning(
+                    'Parser found a node that is neither a network nor a VNF: %s',
+                    node_name)
 
     def get_vfmodule_model_info(self, svc_template):
-        """ extract network model info from yaml and convert to what to be used in SO request
+        """Extract network model info from yaml and convert to what to be used in SO request
         Sample from yaml:
             "topology_template": {
                 "groups": {
                     "vspinfra1116010..Vspinfra111601..base_vcpe_infra..module-0": {
                         "metadata": {
-                            "vfModuleModelCustomizationUUID": "11ddac51-30e3-4a3f-92eb-2eb99c2cb288",
+                            "vfModuleModelCustomizationUUID": "11ddac51-30e3-4a3f-92eb-2eb992cb288",
                             "vfModuleModelInvariantUUID": "02f70416-581e-4f00-bde1-d65e69af95c5",
                             "vfModuleModelName": "Vspinfra111601..base_vcpe_infra..module-0",
                             "vfModuleModelUUID": "88c78078-f1fd-4f73-bdd9-10420b0f6353",
@@ -176,26 +185,30 @@ class CsarParser:
             },
         """
         node_dic = svc_template['topology_template']['groups']
-        for node_name, v in list(node_dic.items()):
-            if v['type'].startswith('org.openecomp.groups.VfModule'):
+        for node_name, node_value in list(node_dic.items()):
+            if node_value['type'].startswith('org.openecomp.groups.VfModule'):
                 model = {
                     'modelType': 'vfModule',
-                    'modelInvariantId':  v['metadata']['vfModuleModelInvariantUUID'],
-                    'modelVersionId': v['metadata']['vfModuleModelUUID'],
-                    'modelName': v['metadata']['vfModuleModelName'],
-                    'modelVersion': v['metadata']['vfModuleModelVersion'],
-                    'modelCustomizationId': v['metadata']['vfModuleModelCustomizationUUID'],
-                    'modelCustomizationName': v['metadata']['vfModuleModelName']
+                    'modelInvariantId':  node_value['metadata']['vfModuleModelInvariantUUID'],
+                    'modelVersionId': node_value['metadata']['vfModuleModelUUID'],
+                    'modelName': node_value['metadata']['vfModuleModelName'],
+                    'modelVersion': node_value['metadata']['vfModuleModelVersion'],
+                    'modelCustomizationId': node_value['metadata']['vfModuleModelCustomizationUUID'],
+                    'modelCustomizationName': node_value['metadata']['vfModuleModelName']
                 }
                 self.vfmodule_models.append(model)
-                self.logger.info('Parser found a VF module: ' + model['modelCustomizationName'])
+                self.logger.info(
+                    'Parser found a VF module: %s for node name %s',
+                    model['modelCustomizationName'],
+                    node_name)
 
     def parse_service_yaml(self, filename):
+        """Parse service yaml."""
         # clean up
         self.svc_model = {}
         self.net_models = []    # there could be multiple networks
         self.vnf_models = []    # this version only support a single VNF in the service template
-        self.vfmodule_models = []   # this version only support a single VF module in the service template
+        self.vfmodule_models = []   # support a single VF module in the service template
 
         svc_template = yaml.load(open(filename, 'r'), Loader=yaml.Loader)
         self.get_service_model_info(svc_template)
@@ -205,11 +218,14 @@ class CsarParser:
         return True
 
     def parse_csar(self, csar_file):
+        """Parse csar file."""
         yaml_file = self.get_service_yaml_from_csar(csar_file)
         if yaml_file != '':
             return self.parse_service_yaml(yaml_file)
+        return None
 
     def print_models(self):
+        """Print models."""
         print('---------Service Model----------')
         print(json.dumps(self.svc_model, indent=2, sort_keys=True))
 
@@ -226,5 +242,6 @@ class CsarParser:
             print(json.dumps(model, indent=2, sort_keys=True))
 
     def test(self):
+        """Built-in test function."""
         self.parse_csar('csar/service-Vcpesvcinfra111601-csar.csar')
         self.print_models()
