@@ -16,6 +16,24 @@
       "revId": "d4af56d4c2f67a1285da783764f20a0c1c546592",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee2a8a74_4a50f2b6",
+        "filename": "robotframework-onap/test-requirements.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1215
+      },
+      "writtenOn": "2019-08-29T14:59:36Z",
+      "side": 0,
+      "message": "I tested locally and apparently it is also OK through the JobBuilder. We do not need pytest (we use nose, coverage, mock)",
+      "parentUuid": "856a4ecc_cf53e0e1",
+      "revId": "d4af56d4c2f67a1285da783764f20a0c1c546592",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
