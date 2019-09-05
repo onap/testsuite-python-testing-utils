@@ -44,11 +44,11 @@ class CloudConfigSOKeywords(object):
     @keyword
     def upsert_cloud_configuration(self, endpoint, data_path, templates_folder, template, arguments, auth=None):
         """Creates a cloud configuration in SO, or if it exists updates it"""
-        get_resp = self.get_cloud_configuration(endpoint, data_path, arguments['site_name'])
+        get_resp = self.get_cloud_configuration(endpoint, data_path, arguments['site_name'], auth=auth)
         self.templating.create_environment("so", templates_folder)
         data = self.templating.apply_template("so", template, arguments)
         if get_resp.status_code == 404:
             resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         else:
-            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
+            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path + "/" + arguments['site_name'], data=data, auth=auth)
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")
