@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8253da4_450874af",
+        "filename": "robotframework-onap/ONAPLibrary/VVPValidation.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 4009
+      },
+      "writtenOn": "2019-09-09T05:48:02Z",
+      "side": 1,
+      "message": "ONAP is supposed to work in offline lab, all python libraries should be part of testsuite image",
+      "revId": "b3ffbff991532a6ef3acc4e2b1ff5bda9c2f7b04",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
