@@ -75,11 +75,10 @@ class RequestsHelper(object):
 
     def _create_headers(self, sdc_user_id=None, accept="application/json", content_type="application/json", md5=None):
         """Create the headers that are used by onap"""
-        uuid = self.uuid.generate_uuid4()
         headers = {
             "Accept": accept,
             "Content-Type": content_type,
-            "X-TransactionId": self.application_id + "-" + uuid,
+            "X-TransactionId": self.uuid.generate_uuid4(),
             "X-FromAppId": self.application_id
         }
         if sdc_user_id is not None:
