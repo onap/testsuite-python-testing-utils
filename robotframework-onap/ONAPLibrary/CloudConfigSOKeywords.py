@@ -18,9 +18,9 @@ from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
 
-class CloudConfigSOKeywords(object):
-    """SO is an ONAP testing library for Robot Framework that provides functionality for interacting with the serivce
-    orchestrator. """
+class CloudConfigSOKeywords():
+    """SO is an ONAP testing library for Robot Framework that provides
+    functionality for interacting with the service orchestrator. """
 
     def __init__(self):
         super(CloudConfigSOKeywords, self).__init__()
@@ -31,24 +31,47 @@ class CloudConfigSOKeywords(object):
     @keyword
     def get_cloud_configuration(self, endpoint, data_path, site_name, auth=None):
         """Gets cloud configuration in SO"""
-        return self.reqs.get_request(alias="so", endpoint=endpoint, data_path=data_path + "/" + site_name, auth=auth)
+        return self.reqs.get_request(
+            alias="so",
+            endpoint=endpoint,
+            data_path=data_path + "/" + site_name,
+            auth=auth)
 
     @keyword
-    def create_cloud_configuration(self, endpoint, data_path, templates_folder, template, arguments, auth=None):
-        """Creates a cloud configuration in SO, so it knows how to talk to an openstack cloud"""
+    def create_cloud_configuration(self, endpoint, data_path, templates_folder,
+                                   template, arguments, auth=None):
+        """Creates a cloud configuration in SO
+        so it knows how to talk to an openstack cloud"""
         self.templating.create_environment("so", templates_folder)
         data = self.templating.apply_template("so", template, arguments)
-        resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
+        resp = self.reqs.post_request(
+            alias="so",
+            endpoint=endpoint,
+            data_path=data_path,
+            data=data,
+            auth=auth)
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")
 
     @keyword
-    def upsert_cloud_configuration(self, endpoint, data_path, templates_folder, template, arguments, auth=None):
+    def upsert_cloud_configuration(self, endpoint, data_path, templates_folder,
+                                   template, arguments, auth=None):
         """Creates a cloud configuration in SO, or if it exists updates it"""
-        get_resp = self.get_cloud_configuration(endpoint, data_path, arguments['site_name'], auth=auth)
+        get_resp = self.get_cloud_configuration(
+            endpoint, data_path, arguments['site_name'], auth=auth)
         self.templating.create_environment("so", templates_folder)
         data = self.templating.apply_template("so", template, arguments)
         if get_resp.status_code == 404:
-            resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
+            resp = self.reqs.post_request(
+                alias="so",
+                endpoint=endpoint,
+                data_path=data_path,
+                data=data,
+                auth=auth)
         else:
-            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path + "/" + arguments['site_name'], data=data, auth=auth)
+            resp = self.reqs.put_request(
+                alias="so",
+                endpoint=endpoint,
+                data_path=data_path + "/" + arguments['site_name'],
+                data=data,
+                auth=auth)
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")
