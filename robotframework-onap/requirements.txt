@@ -17,3 +17,4 @@ robotframework-requests
 robotlibcore-temp
 six
 urllib3
+more-itertools~=5.0.0

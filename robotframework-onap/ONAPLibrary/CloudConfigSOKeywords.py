@@ -50,5 +50,6 @@ class CloudConfigSOKeywords(object):
         if get_resp.status_code == 404:
             resp = self.reqs.post_request(alias="so", endpoint=endpoint, data_path=data_path, data=data, auth=auth)
         else:
-            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data_path=data_path + "/" + arguments['site_name'], data=data, auth=auth)
+            resp = self.reqs.put_request(alias="so", endpoint=endpoint, data=data, auth=auth,
+                                         data_path=data_path + "/" + arguments['site_name'])
         self.builtin.should_match_regexp(str(resp.status_code), "^(201|200)$")
