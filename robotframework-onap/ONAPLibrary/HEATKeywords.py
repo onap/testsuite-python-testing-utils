@@ -28,6 +28,8 @@ from ONAPLibrary.Utilities import Utilities
 class HEATKeywords(object):
     """Utilities useful for constructing OpenStack HEAT requests. """
 
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+
     def __init__(self):
         super(HEATKeywords, self).__init__()
         self.application_id = "robot-ete"
