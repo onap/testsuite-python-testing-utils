@@ -18,7 +18,7 @@ from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
 
 
-class CloudConfigSOKeywords():
+class CloudConfigSOKeywords(object):
     """SO is an ONAP testing library for Robot Framework that provides
     functionality for interacting with the service orchestrator. """
 
