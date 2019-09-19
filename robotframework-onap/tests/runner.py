@@ -17,6 +17,7 @@ suite = TestSuite()
 
 # add tests to the test suite
 suite.addTests(loader.loadTestsFromTestCase(AAITests))
+suite.addTests(loader.loadTestsFromTestCase(SOTests))
 suite.addTests(loader.loadTestsFromTestCase(ProtobufKeywordsTest))
 suite.addTests(loader.loadTestsFromTestCase(SoUtilsTest))
 suite.addTests(loader.loadTestsFromTestCase(UUIDKeywordsTest))
