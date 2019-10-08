@@ -18,7 +18,9 @@ from kafka import TopicPartition
 import ssl
 from robot.api.deco import keyword
 from robot import utils
+import logging
 
+logging.getLogger("kafka").setLevel(logging.CRITICAL)
 
 class KafkaKeywords(object):
     """ Utilities useful for Kafka consuming and producing """
