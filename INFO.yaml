@@ -28,9 +28,6 @@ meetings:
       repeats: 'weekly'
       time: '14:00 UTC'
 repositories:
-    - 'testsuite'
-    - 'testsuite-heatbridge'
-    - 'testsuite-properties'
     - 'testsuite-python-testing-utils'
 committers:
     - <<: *onap_releng_ptl
@@ -44,11 +41,6 @@ committers:
       company: 'ATT'
       id: 'DR695H'
       timezone: 'America/New_York'
-    - name: 'Gary Wu'
-      email: 'gary.i.wu@huawei.com'
-      company: 'Huawei'
-      id: 'gwu'
-      timezone: 'America/Santa_Clara'
     - name: 'Marco Platania'
       email: 'platania@research.att.com'
       company: 'ATT'
