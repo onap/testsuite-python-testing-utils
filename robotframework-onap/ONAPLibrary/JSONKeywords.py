@@ -25,10 +25,8 @@ class JSONKeywords(object):
     def __init__(self):
         super(JSONKeywords, self).__init__()
 
-    @keyword
-    def json_equals(self, left, right):
-        """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them,
-        returning if they are equal or not."""
+    def _json_compare(self, left, right, cmp):
+        """_json_compare takes two strings or JSON objects and checks their DeepDiff using cmp function."""
         if isinstance(left, string_types):
             left_json = json.loads(left)
         else:
@@ -39,10 +37,27 @@ class JSONKeywords(object):
             right_json = right
 
         ddiff = DeepDiff(left_json, right_json, ignore_order=True)
-        if ddiff == {}:
-            return True
-        else:
+        return cmp(ddiff)
+
+    @keyword
+    def json_equals(self, left, right):
+        """JSON Equals takes in two strings or json objects, converts them into json if needed and then compares them,
+        returning if they are equal or not."""
+        return self._json_compare(left, right, lambda ddiff: ddiff == {})
+
+    @keyword
+    def json_should_contain_sub_json(self, left, right):
+        """JSON Should Contain Sub JSON fails unless all items in right are found in left."""
+
+        # following could have been really long lambda but readability counts
+        def _is_subset(ddiff):
+            if ddiff == {}:
+                return True
+            if len(ddiff.keys()) == 1 and 'dictionary_item_removed' in ddiff.keys():
+                return True
             return False
+
+        return self._json_compare(left, right, _is_subset)
 
     @keyword
     def make_list_into_dict(self, dict_list, key):

@@ -11,6 +11,7 @@ from tests.ONAPLibrary.Base64KeywordsTests import Base64KeywordsTests
 from tests.ONAPLibrary.RequestsHelperTests import RequestsHelperTests
 from tests.ONAPLibrary.AAITests import AAITests
 from tests.ONAPLibrary.SOTests import SOTests
+from tests.ONAPLibrary.JSONKeywordsTest import JSONKeywordsTest
 
 # initialize the test suite
 loader = TestLoader()
@@ -25,6 +26,7 @@ suite.addTests(loader.loadTestsFromTestCase(UUIDKeywordsTest))
 suite.addTests(loader.loadTestsFromTestCase(ServiceMappingKeywordsTests))
 suite.addTests(loader.loadTestsFromTestCase(Base64KeywordsTests))
 suite.addTests(loader.loadTestsFromTestCase(RequestsHelperTests))
+suite.addTests(loader.loadTestsFromTestCase(JSONKeywordsTest))
 
 # initialize a runner, pass it your suite and run it
 runner = TextTestRunner(verbosity=3)
