@@ -22,6 +22,7 @@ import logging
 
 logging.getLogger("kafka").setLevel(logging.CRITICAL)
 
+
 class KafkaKeywords(object):
     """ Utilities useful for Kafka consuming and producing """
 
