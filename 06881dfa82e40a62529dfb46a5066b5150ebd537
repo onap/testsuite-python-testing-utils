@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Verified+1: Daniel Rose <dr695h@att.com>
+Code-Review+2: Daniel Rose <dr695h@att.com>
+Submitted-by: Daniel Rose <dr695h@att.com>
+Submitted-at: Tue, 12 May 2020 14:37:22 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/107522
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
