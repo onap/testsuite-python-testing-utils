@@ -22,7 +22,7 @@ from zipfile import ZipFile
 OUTPUT_DATA = {
     "vnf_checksum": "",
     "build_tag": "",
-    "version": "2019.09",
+    "version": "2019.12",
     "test_date": "",
     "duration": "",
     "vnf_type": "heat",
@@ -107,19 +107,18 @@ class OVPListener:
 
 def sha256(template_directory):
     heat_sha = None
+    zip_file = "{}/tmp.zip".format(template_directory)
+    onlyfiles = [f for f in os.listdir(template_directory) if os.path.isfile(os.path.join(template_directory, f))]
 
-    if os.path.exists(template_directory):
-        zip_file = "{}/tmp_heat.zip".format(template_directory)
-        with ZipFile(zip_file, "w") as zip_obj:
-            for folder_name, subfolders, filenames in os.walk(template_directory):
-                for filename in filenames:
-                    file_path = os.path.join(folder_name, filename)
-                    zip_obj.write(file_path)
+    with ZipFile(zip_file, 'w') as zipObj:
+        for filename in onlyfiles:
+            zipObj.write(os.path.join(template_directory, filename), arcname=filename)
 
-        with open(zip_file, "rb") as f:
-            bytes = f.read()
-            heat_sha = hashlib.sha256(bytes).hexdigest()
+    with open(zip_file, "rb") as f:
+        bytes = f.read()
+        heat_sha = hashlib.sha256(bytes).hexdigest()
 
+    if os.path.exists(zip_file):
         os.remove(zip_file)
 
     return heat_sha
