@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Michal Jagiello <michal.jagiello@t-mobile.pl>
+Submitted-by: Michal Jagiello <michal.jagiello@t-mobile.pl>
+Submitted-at: Fri, 03 Sep 2021 08:46:36 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/123825
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
