@@ -36,8 +36,8 @@ class KafkaKeywords(object):
         """connect to the specified kafka server"""
         client = {
             "bootstrap_servers": kafka_host,
-            "sasl_username": sasl_user,
-            "sasl_password": sasl_password,
+            "sasl_plain_username": sasl_user,
+            "sasl_plain_password": sasl_password,
             "security_protocol": 'SASL_PLAINTEXT',
             "ssl_context": ssl.create_default_context(),
             "sasl_mechanism": sasl_mechanism
@@ -55,8 +55,8 @@ class KafkaKeywords(object):
     def _get_producer(self, alias):
         cache = self._cache.switch(alias)
         prod = KafkaProducer(bootstrap_servers=cache['bootstrap_servers'],
-                             sasl_username=cache['sasl_username'],
-                             sasl_password=cache['sasl_password'],
+                             sasl_plain_username=cache['sasl_username'],
+                             sasl_plain_password=cache['sasl_password'],
                              security_protocol=cache['security_protocol'],
                              ssl_context=cache['ssl_context'],
                              sasl_mechanism=cache['sasl_mechanism'],
@@ -87,8 +87,8 @@ class KafkaKeywords(object):
         cache = self._cache.switch(alias)
 
         consumer = KafkaConsumer(bootstrap_servers=cache['bootstrap_servers'],
-                                 sasl_username=cache['sasl_username'],
-                                 sasl_password=cache['sasl_password'],
+                                 sasl_plain_username=cache['sasl_username'],
+                                 sasl_plain_password=cache['sasl_password'],
                                  security_protocol=cache['security_protocol'],
                                  ssl_context=cache['ssl_context'],
                                  sasl_mechanism=cache['sasl_mechanism'],
