@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "c1c8fe6a_940e338d",
+        "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4405
+      },
+      "writtenOn": "2022-03-04T13:49:37Z",
+      "side": 1,
+      "message": "Or could we add the PLAIN value to the testsuite?\nhttps://gerrit.onap.org/r/gitweb?p\u003dtestsuite.git;a\u003dblob;f\u003drobot/resources/dcae/hvves.robot;h\u003dc460422e1e42a7c1872e6d5df39e82d0d0bac5f1;hb\u003de040392eb712511b10eb83ffc8f5538c912aabea#l58",
+      "parentUuid": "529faaf5_e7f38688",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 42
+      },
+      "revId": "860728b66a792d0944b482b7394d6a04b1a74404",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e402da7c_cab2344b",
         "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
         "patchSetId": 2
