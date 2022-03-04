@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8672baa7_fb477936",
+        "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4405
+      },
+      "writtenOn": "2022-03-04T12:49:15Z",
+      "side": 1,
+      "message": "Pushed another patch here - https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/127501\n\nUnfortunately, this will continue to fail until we have the strimzi project added and the changes needed for hv-ves to use it.\nAlso, need to make changes to how robot gets the user password as it will need to be retrieved from a k8s secret.",
+      "parentUuid": "6ad8e2bc_236d2d64",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 42
+      },
+      "revId": "860728b66a792d0944b482b7394d6a04b1a74404",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e402da7c_cab2344b",
         "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
         "patchSetId": 2
