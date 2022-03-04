@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "529faaf5_e7f38688",
+        "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 6044
+      },
+      "writtenOn": "2022-03-04T12:53:41Z",
+      "side": 1,
+      "message": "We could set SASL_MECHANISM default to PLAIN until that\u0027s done maybe?",
+      "parentUuid": "8672baa7_fb477936",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 42
+      },
+      "revId": "860728b66a792d0944b482b7394d6a04b1a74404",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e402da7c_cab2344b",
         "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
         "patchSetId": 2
