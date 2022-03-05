@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "5637d9d5_b7517df7",
+        "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4405
+      },
+      "writtenOn": "2022-03-05T12:33:09Z",
+      "side": 1,
+      "message": "Actually no you are correct. I have changed it to default to PLAIN",
+      "parentUuid": "c1c8fe6a_940e338d",
+      "range": {
+        "startLine": 58,
+        "startChar": 29,
+        "endLine": 58,
+        "endChar": 42
+      },
+      "revId": "860728b66a792d0944b482b7394d6a04b1a74404",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e402da7c_cab2344b",
         "filename": "robotframework-onap/ONAPLibrary/KafkaKeywords.py",
         "patchSetId": 2
