@@ -9,7 +9,7 @@ jinja2
 jsonpath-rw
 kafka-python
 paramiko
-protobuf
+protobuf==3.16.0
 pyyaml
 requests
 robotframework
