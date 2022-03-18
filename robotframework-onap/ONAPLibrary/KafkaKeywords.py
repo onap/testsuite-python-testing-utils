@@ -1,5 +1,6 @@
 # Copyright 2019 AT&T Intellectual Property. All rights reserved.
 # Copyright (C) 2022 Nordix Foundation
+# Copyright (C) 2022 Nokia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,8 +37,8 @@ class KafkaKeywords(object):
         """connect to the specified kafka server"""
         client = {
             "bootstrap_servers": kafka_host,
-            "sasl_plain_username": sasl_user,
-            "sasl_plain_password": sasl_password,
+            "sasl_username": sasl_user,
+            "sasl_password": sasl_password,
             "security_protocol": 'SASL_PLAINTEXT',
             "ssl_context": ssl.create_default_context(),
             "sasl_mechanism": sasl_mechanism
