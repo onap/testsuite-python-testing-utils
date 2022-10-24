@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Lukasz Rajewski <lukasz.rajewski@t-mobile.pl>
+Submitted-by: Lukasz Rajewski <lukasz.rajewski@t-mobile.pl>
+Submitted-at: Mon, 24 Oct 2022 11:55:12 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/131739
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
