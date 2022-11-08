@@ -13,7 +13,7 @@ protobuf==3.16.0
 pyyaml
 requests
 robotframework
-robotframework-requests
+robotframework-requests==0.9.3
 robotlibcore-temp
 six
 urllib3
