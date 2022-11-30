@@ -1,0 +1,132 @@
+CHANGES
+=======
+
+* Chore: Unpin robot/versions to match ci-management
+* Release version 11.0.0 of robotframework-onap library
+* [INTEGRATION] Update committers list
+* Release Jakarta 10.0.0 version
+* [INTEGRATION] Update committers list
+* [KAFKA] Fix Kafka Client parameters cache reference
+* [INTEGRATION] Limit Python version to max 3.9 for robotframework-onap
+* [INTEGRATION] Fix failing HVVES test case in Jakarta release
+* [KAFKA] Fix sasl user params
+* [KAFKA] Add support for scram-sha on kafka client
+* [INTEGRATION] Update committers list
+* [INTEGRATION] Remove Bartosz Gardziejewski from commiters list
+* [ADMIN] Update INFO.yaml (new PTL and cleanup)
+* [ADMIN] Update and clean Integration committer list
+* [ADMIN] Update and clean Integration committer list
+* [PBR] update python-utils version for pbr
+* [ADMIN] Add Illia Halych in INFO.yaml
+
+7.0.1
+-----
+
+* Add Lasse as Integration committer
+* Update INFO.yaml
+* [TEST] updating ovp listener for sha generation
+* Update INFO.yaml
+* Fix pep8 compliance issue from 81c3b68c78219a19e4be8953f75a3e8d34828fe5
+* hv-ves ete fix warning 'Sending username and password in the clear'
+* Fix Marcin and Bartek id
+* Add JSON Should Contain Sub JSON Keyword
+* Add marcin, Bartek and Eric as Integration committers
+* Remove Gary from the committer list
+* Update INFO.yaml
+* Fix python package creation
+* bumping versions for el alto
+* fix issue around class format
+* cleaning up line endings
+* move the pip command to common section again
+* [INT] Add python code for vnf lifecycle validation
+* small change to check the build process
+* small change to check the build process
+* add more-itertools in requirements (not only in test-requirements)
+* some components expect this field to be a uuid
+* ROBOT test cases improvements for PnP PNF in El Alto release
+* Add itertools dependency to support python2.7
+* Add tox
+* fix linter errors and copyright
+* improved unicode encoding for the string in py2 and py3
+* use unicode encoding for the string
+* str for aai properties and adding a test
+* initial redo of the requests keywords for client certs
+* fix few errors
+* send\_binary\_data\_over\_ssl keyword added to SocketKeywords.py
+* pull global vars from robot trial
+* kafka topic partition definition
+* remove the 200 for sdc too
+* add so delete request
+* correcting the looping check
+* KafkaKeywords update
+* aai should not check status code
+* remove the last of the SO robot code
+* adding missing import
+* correct the order of parameters
+* adding in the keywords for aai bas
+* hvves related utils update
+* fixing is not none
+* moving all libs to global scope
+* fix uuid reimplemntation
+* cleanup how message factory is used
+* move preload to python lib
+* moving basic rest calls to requestshelper
+* refacotr out headers so they are common across ecomp
+* fix md5 use to call correct object
+* add in sdc keywords
+* add string templating to new way
+* dd in sdnc keywords for vcpe
+* support json path searching
+* adding in new keywords for base64, oof and sniro
+* removing unused code and moving so params
+* removing the eteutils folder since its not used anymore
+* add string templating to new way
+* removing unused libraries
+* add sasl support to kafka
+* copying openstack keywords to the onap lib
+* create music keywords and move over http keywords
+* moving http to new keyword format
+* move dns and uuid to the new format of keywords
+* Improve URL encoding
+* add in kafka lib for working with kafka directly
+* remove jsonutils since its in the ONAPLibrary now
+* move over json keywords and protobuf keyword
+* not ready to submit my changes to soutils yet
+* deelete requests client cert and copy dns
+* create so keywords for use in robot framework
+* move templating engine
+* cleanup descriptions of the method names
+* adding in new onap lib and servicemapping
+* redo tempalteengine to not need param in init
+* add socketutils
+* move to 5 for master branch
+* Check unicode for string
+* fix vcpeutils
+* fix httputils
+* support python 3
+* support python 3
+* move back to python based builds
+* skip parent project deploy
+* make robotframework-onap not deploy twice
+* move robotframeworkonap to subdirectory
+* Removed heatbride call
+* Add vcpeutils for vFW
+* Add templating engine
+* Fix for deepdiff 4.0 upgrade
+* Update INFO.yaml file
+* Add csv file helper
+* code changed to add v2.0 as default value
+* Support for Keystone V3
+* removing string encode which doesnt seem to encode
+* adjust imports of urlib so doesnt rely on requests
+* Adding string encoder support
+* Add method to parse URL into piece parts
+* Support WindRiver openstack in library
+* Externalize soak parameters to a json file
+* [TEST-18] Add function to suppress cert warnings
+* TEST-26 Add DCAE VMs to list to gather data
+* TEST-2 load/soak test utility
+* Update .gitreview with onap URL
+* TEST-6 Robot listener for failed tests
+* Initial checkin of OpenECOMP testing utils
+* Initial empty repository
