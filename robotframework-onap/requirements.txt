@@ -1,7 +1,7 @@
 # The order of packages is significant, because pip processes them in the order
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
-pbr!=2.1.0 # Apache-2.0
+pbr
 deepdiff
 dnspython
 future
@@ -9,12 +9,11 @@ jinja2
 jsonpath-rw
 kafka-python
 paramiko
-protobuf==3.16.0
+protobuf
 pyyaml
 requests
-robotframework
 robotframework-requests==0.9.3
 robotlibcore-temp
 six
 urllib3
-more-itertools~=5.0.0
+more-itertools
