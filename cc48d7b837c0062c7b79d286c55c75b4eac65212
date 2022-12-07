@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5dedb5e_6a7af9cf",
+        "filename": "robotframework-onap/requirements.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 6079
+      },
+      "writtenOn": "2022-12-07T06:26:36Z",
+      "side": 0,
+      "message": "Please, don\u0027t. I\u0027ve add that change to install exactly that version of robotframework-requests as for later versions function we are using was removed",
+      "revId": "cc48d7b837c0062c7b79d286c55c75b4eac65212",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
