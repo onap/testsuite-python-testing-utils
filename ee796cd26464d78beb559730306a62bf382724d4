@@ -1,0 +1,8 @@
+Code-Review+2: Micha? Jagie??o <michal.jagiello@t-mobile.pl>
+Code-Review+2: Kevin Sandi <ksandi@contractor.linuxfoundation.org>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Kevin Sandi <ksandi@contractor.linuxfoundation.org>
+Submitted-at: Thu, 15 Dec 2022 14:27:11 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/132593
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
