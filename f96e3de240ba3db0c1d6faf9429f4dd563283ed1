@@ -1,0 +1,7 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Fiachra Corcoran <fiachra.corcoran@est.tech>
+Submitted-by: Fiachra Corcoran <fiachra.corcoran@est.tech>
+Submitted-at: Mon, 24 Apr 2023 14:17:24 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/testsuite/python-testing-utils/+/134254
+Project: testsuite/python-testing-utils
+Branch: refs/heads/master
