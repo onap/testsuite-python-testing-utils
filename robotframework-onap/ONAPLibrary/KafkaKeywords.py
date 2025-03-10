@@ -94,7 +94,8 @@ class KafkaKeywords(object):
                                  ssl_context=cache['ssl_context'],
                                  sasl_mechanism=cache['sasl_mechanism'],
                                  group_id=cgn,
-                                 request_timeout_ms=10001)
+                                 request_timeout_ms=10000,
+                                 api_version=(3,0,0))
 
         consumer.topics()
         partition_set = consumer.partitions_for_topic(str(topic_name))

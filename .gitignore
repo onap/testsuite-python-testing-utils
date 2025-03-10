@@ -260,3 +260,4 @@ typings/
 
 # End of https://www.gitignore.io/api/node,sonar,maven,eclipse,sonarqube,intellij+all
 .flattened-pom.xml
+.venv
