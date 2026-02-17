@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from six.moves import urllib
+from urllib import parse as urlparse
 from robot.api.deco import keyword
 import urllib3
 
@@ -25,12 +25,12 @@ class HTTPKeywords(object):
     @keyword
     def url_encode_string(self, barestring):
         """URL Encode String takes in a string and converts it into fully 'percent-encoded' string"""
-        return urllib.parse.quote(barestring)
+        return urlparse.quote(barestring)
 
     @keyword
     def url_parse(self, url):
         """  Get pieces of the URL """
-        return urllib.parse.urlparse(url)
+        return urlparse.urlparse(url)
 
     @keyword
     def disable_warnings(self):

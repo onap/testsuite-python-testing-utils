@@ -21,7 +21,6 @@ import copy
 from hashlib import md5
 from paramiko import RSAKey
 from paramiko.ssh_exception import PasswordRequiredException
-from six import string_types
 from ONAPLibrary.Utilities import Utilities
 
 
@@ -40,9 +39,9 @@ class HEATKeywords(object):
     def get_yaml(self, template_file):
         """Template Yaml To Json reads a YAML Heat template file returns a JSON string that can be used included
         in an Openstack Add Stack Request"""
-        if isinstance(template_file, string_types):
-            fin = open(template_file, 'r')
-            yamlobj = yaml.load(fin)
+        if isinstance(template_file, str):
+            with open(template_file, 'r') as fin:
+                yamlobj = yaml.safe_load(fin)
             return yamlobj
         return None
 
@@ -51,14 +50,13 @@ class HEATKeywords(object):
         """Template Yaml To Json reads a YAML Heat template file returns a JSON string that can be used included
         in an Openstack Add Stack Request"""
         contents = None
-        if isinstance(template_file, string_types):
-            fin = open(template_file, 'r')
-            yamlobj = yaml.load(fin)
-            fin.close()
+        if isinstance(template_file, str):
+            with open(template_file, 'r') as fin:
+                yamlobj = yaml.safe_load(fin)
             if 'heat_template_version' in yamlobj:
                 datetime = yamlobj['heat_template_version']
                 yamlobj['heat_template_version'] = str(datetime)
-            fout = io.BytesIO()
+            fout = io.StringIO()
             json.dump(yamlobj, fout)
             contents = fout.getvalue()
             fout.close()
@@ -68,12 +66,11 @@ class HEATKeywords(object):
     def env_yaml_to_json(self, template_file):
         """Env Yaml To JSon reads a YAML Heat env file and returns a JSON string that can be used included
         in an Openstack Add Stack Request"""
-        if isinstance(template_file, string_types):
-            fin = open(template_file, 'r')
-            yamlobj = yaml.load(fin)
-            fin.close()
+        if isinstance(template_file, str):
+            with open(template_file, 'r') as fin:
+                yamlobj = yaml.safe_load(fin)
             if 'parameters' in yamlobj:
-                fout = io.BytesIO()
+                fout = io.StringIO()
                 json.dump(yamlobj['parameters'], fout)
                 contents = fout.getvalue()
                 fout.close()

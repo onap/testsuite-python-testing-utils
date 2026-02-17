@@ -15,7 +15,6 @@
 import json
 from robot.api.deco import keyword
 from deepdiff import DeepDiff
-from six import string_types
 
 
 class JSONKeywords(object):
@@ -27,11 +26,11 @@ class JSONKeywords(object):
 
     def _json_compare(self, left, right, cmp):
         """_json_compare takes two strings or JSON objects and checks their DeepDiff using cmp function."""
-        if isinstance(left, string_types):
+        if isinstance(left, str):
             left_json = json.loads(left)
         else:
             left_json = left
-        if isinstance(right, string_types):
+        if isinstance(right, str):
             right_json = json.loads(right)
         else:
             right_json = right

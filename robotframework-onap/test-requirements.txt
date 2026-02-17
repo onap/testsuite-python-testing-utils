@@ -1,11 +1,11 @@
 # The order of packages is significant, because pip processes them in the order
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
-coverage!=4.4,>=4.0 # Apache-2.0
-mock>=2.0 # BSD
-nose # LGPL
+coverage>=4.0 # Apache-2.0
+pytest>=7.0.0
+pytest-cov
 flake8 # MIT
 pylint # GPLv2
 requests
 requests-mock
-more-itertools~=5.0.0
+more-itertools
