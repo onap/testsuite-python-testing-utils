@@ -4,7 +4,6 @@
 pbr
 deepdiff
 dnspython
-future
 jinja2
 jsonpath-rw
 kafka-python
@@ -12,8 +11,7 @@ paramiko
 protobuf
 pyyaml
 requests
-robotframework-requests==0.9.3
+robotframework-requests>=0.9.6
 robotlibcore-temp
-six
 urllib3
 more-itertools
