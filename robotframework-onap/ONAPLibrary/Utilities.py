@@ -1,4 +1,5 @@
 # Copyright 2019 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2026 Deutsche Telekom AG. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@ from ONAPLibrary.UUIDKeywords import UUIDKeywords
 from ONAPLibrary.HTTPKeywords import HTTPKeywords
 from ONAPLibrary.Base64Keywords import Base64Keywords
 from ONAPLibrary.VariableKeywords import VariableKeywords
+from ONAPLibrary.BasicAuthKeywords import BasicAuthKeywords
 
 
 class Utilities(HybridCore):
@@ -33,6 +35,7 @@ class Utilities(HybridCore):
             UUIDKeywords(),
             HTTPKeywords(),
             Base64Keywords(),
-            VariableKeywords()
+            VariableKeywords(),
+            BasicAuthKeywords()
         ]
         HybridCore.__init__(self, self.keyword_implementors)
